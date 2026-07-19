@@ -106,7 +106,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.4</div>
+  <div class="ver">ver.5</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -345,7 +345,9 @@ const LVNAME=['','レベル1','レベル2','レベル3','レベル4','レベル5
 function renderHome(){
   const list=el('dayList'); list.innerHTML='';
   const today=new Date(); today.setHours(0,0,0,0);
-  for(let i=0;i<14;i++){
+  // 開始日(=今日)より前の日付は内容が無いので出さない。今日以降だけ、日が経つほど増える
+  const back=Math.min(60, dayIndexFor(today));
+  for(let i=0;i<=back;i++){
     const d=new Date(today); d.setDate(today.getDate()-i);
     const done=isDone(d); const lv=levelOfIndex(dayIndexFor(d));
     const label=i===0?'きょう':i===1?'きのう':`${d.getMonth()+1}/${d.getDate()}`;
