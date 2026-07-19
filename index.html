@@ -106,7 +106,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.7</div>
+  <div class="ver">ver.8</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -184,7 +184,11 @@ const CVC=[['cat','🐱'],['dog','🐶'],['pig','🐷'],['cow','🐮'],['bus','�
 /* ============================================================
    ユーティリティ
    ============================================================ */
-function rnd(n){ return Math.floor(Math.random()*n); }
+/* 乱数はRNG経由。プール生成中は固定シード=毎回同じプール（日付→問題を固定） */
+let RNG=Math.random;
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function rnd(n){ return Math.floor(RNG()*n); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
 function sample(arr,not){ let x; do{ x=arr[rnd(arr.length)]; }while(not&&x===not); return x; }
 const el=id=>document.getElementById(id);
@@ -287,6 +291,7 @@ function uniq(gen, n, keyf){
   return out;
 }
 function buildPool(){
+  RNG=mulberry32(20260719);   // 固定シード: いつ開いても同じプール
   let L1=[], L2=[], L3=[], L4=[], L5=[];
   // レベル1: 基本語彙（英単語→絵/色）両方向で厚く
   ['color','animal','food','vehicle','shape','body'].forEach(c=>{
@@ -316,7 +321,9 @@ function buildPool(){
   L5=L5.concat(uniq(()=>qMul(5),25,q=>`m${q.prompt.a}x${q.prompt.b}`));
   L5=L5.concat(uniq(()=>qMul(9),60,q=>`M${q.prompt.a}x${q.prompt.b}`));
   L5=L5.concat(uniq(()=>qSub(20),120,q=>`S${q.prompt.a}-${q.prompt.b}`));
-  return [].concat(shuffle(L1), shuffle(L2), shuffle(L3), shuffle(L4), shuffle(L5));
+  const pool=[].concat(shuffle(L1), shuffle(L2), shuffle(L3), shuffle(L4), shuffle(L5));
+  RNG=Math.random;            // ゲーム中の表示順などは通常のランダムに戻す
+  return pool;
 }
 const POOL=buildPool();
 const DAILY=30;
