@@ -99,6 +99,7 @@
 
 <!-- ====== ホーム画面（毎日の一覧） ====== -->
 <div class="screen" id="home">
+  <div style="position:fixed;top:8px;right:12px;font-size:12px;color:#c9a97e;font-weight:800">ver.3</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -280,7 +281,9 @@ function render(){
           : it.face.t==='n' ? `<div class="face" style="font-size:120px;color:#e8743b">${it.face.v}</div>`
           : `<div class="face">${it.face.v}</div>`;
     c.innerHTML=f+`<div class="label">${it.ja}</div>`;
-    c.onclick=()=>choose(it===correct, c);
+    // iOSで最も確実に拾えるよう pointerup と click の両方に割当（lockで二重発火は防止）
+    const h=()=>choose(it===correct, c);
+    c.onclick=h; c.onpointerup=h;
   });
   speak(correct.en,'en-US');
 }
@@ -292,7 +295,7 @@ function choose(isRight, cardEl){
     cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
     setTimeout(()=>speak(PRAISE[Math.floor(Math.random()*PRAISE.length)],'ja-JP'),120);
     queue.shift(); solved++;
-    setTimeout(render, 1200);
+    setTimeout(render, 1000);
   }else{
     cardEl.classList.add('wrong'); playWrong();
     setTimeout(()=>speak('もういちど！','ja-JP'),100);
