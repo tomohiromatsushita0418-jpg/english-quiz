@@ -106,7 +106,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.8</div>
+  <div class="ver">ver.9</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -372,9 +372,16 @@ function renderHome(){
 /* ============================================================
    音
    ============================================================ */
-let AC=null;
-function unlockAudio(){ try{ if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
-  if(AC.state==='suspended')AC.resume(); const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);}catch(e){} }
+let AC=null, AUDIO_UNLOCKED=false;
+function unlockAudio(){ try{
+  if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended')AC.resume();
+  // ★ iOSのWeb Audio出力ロック解除: 無音バッファを1回再生（resumeだけでは不十分な端末対策）
+  const buf=AC.createBuffer(1,1,22050); const src=AC.createBufferSource();
+  src.buffer=buf; src.connect(AC.destination); src.start(0);
+  AUDIO_UNLOCKED=true;
+}catch(e){} }
+function ensureAudio(){ if(!AC)return false; if(AC.state==='suspended'){try{AC.resume();}catch(e){}} return true; }
 function tone(f,t0,dur,type,g){ const o=AC.createOscillator(),ga=AC.createGain(); o.type=type; o.frequency.value=f;
   ga.gain.setValueAtTime(0,t0); ga.gain.linearRampToValueAtTime(g,t0+0.02); ga.gain.exponentialRampToValueAtTime(0.001,t0+dur);
   o.connect(ga); ga.connect(AC.destination); o.start(t0); o.stop(t0+dur); }
@@ -387,7 +394,7 @@ function bell(freq,t0,dur,gain){
     o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+dur); });
 }
 /* 正解: ピンポン ピンポン♪（明るい2連ベル） */
-function playCorrect(){ if(!AC)return; const t=AC.currentTime;
+function playCorrect(){ if(!ensureAudio())return; const t=AC.currentTime;
   bell(1568,t,0.22,0.32); bell(2093,t+0.14,0.30,0.32);
   bell(1568,t+0.34,0.22,0.32); bell(2093,t+0.48,0.55,0.30); }
 /* 不正解: ぶっ ぶー（ブザー） */
@@ -397,9 +404,9 @@ function buzz(t0,dur){ const o=AC.createOscillator(),o2=AC.createOscillator(),g=
   g.gain.setValueAtTime(0.16,t0+Math.max(0.02,dur-0.03)); g.gain.linearRampToValueAtTime(0,t0+dur);
   o.connect(g); o2.connect(g); g.connect(AC.destination);
   o.start(t0);o2.start(t0);o.stop(t0+dur);o2.stop(t0+dur); }
-function playWrong(){ if(!AC)return; const t=AC.currentTime; buzz(t,0.15); buzz(t+0.22,0.45); }
+function playWrong(){ if(!ensureAudio())return; const t=AC.currentTime; buzz(t,0.15); buzz(t+0.22,0.45); }
 /* 全問クリア: 明るいファンファーレ */
-function playFanfare(){ if(!AC)return; const t=AC.currentTime;
+function playFanfare(){ if(!ensureAudio())return; const t=AC.currentTime;
   [523,659,784,1046].forEach((f,i)=>bell(f,t+i*0.11,0.35,0.3));
   bell(1568,t+0.5,0.6,0.3); bell(2093,t+0.64,0.9,0.26); }
 /* 端末にある中で「一番自然な声」を選ぶ（compactの機械音を避ける） */
@@ -478,6 +485,8 @@ el('homeBtn').onclick=goHome;
 el('doneHomeBtn').onclick=goHome;
 el('againBtn').onclick=()=>{ el('doneScreen').classList.add('hidden'); buildQueue(activeDate); render(); };
 el('sound').onclick=()=>{ if(queue[0]&&queue[0].prompt.audio) speak(queue[0].prompt.audio.text, queue[0].prompt.audio.lang); };
+// 画面のどこを最初にさわっても音を解除（day選択前でも確実に）
+['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{ if(!AUDIO_UNLOCKED)unlockAudio(); else ensureAudio(); },{passive:true}));
 renderHome();
 </script>
 </body>
