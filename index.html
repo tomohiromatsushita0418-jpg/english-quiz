@@ -106,7 +106,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.6</div>
+  <div class="ver">ver.7</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -371,8 +371,30 @@ function unlockAudio(){ try{ if(!AC)AC=new (window.AudioContext||window.webkitAu
 function tone(f,t0,dur,type,g){ const o=AC.createOscillator(),ga=AC.createGain(); o.type=type; o.frequency.value=f;
   ga.gain.setValueAtTime(0,t0); ga.gain.linearRampToValueAtTime(g,t0+0.02); ga.gain.exponentialRampToValueAtTime(0.001,t0+dur);
   o.connect(ga); ga.connect(AC.destination); o.start(t0); o.stop(t0+dur); }
-function playCorrect(){ if(!AC)return; const t=AC.currentTime; [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*0.09,0.25,'triangle',0.22)); }
-function playWrong(){ if(!AC)return; const t=AC.currentTime; tone(311.1,t,0.18,'sine',0.15); tone(233.1,t+0.12,0.22,'sine',0.15); }
+/* ベル（倍音つき）で「ピンポン♪」らしい明るい音を作る */
+function bell(freq,t0,dur,gain){
+  [1,2,3].forEach((m,i)=>{ const o=AC.createOscillator(),g=AC.createGain();
+    o.type='sine'; o.frequency.value=freq*m; const gg=gain*(i===0?1:i===1?0.4:0.18);
+    g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(gg,t0+0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+dur); });
+}
+/* 正解: ピンポン ピンポン♪（明るい2連ベル） */
+function playCorrect(){ if(!AC)return; const t=AC.currentTime;
+  bell(1568,t,0.22,0.32); bell(2093,t+0.14,0.30,0.32);
+  bell(1568,t+0.34,0.22,0.32); bell(2093,t+0.48,0.55,0.30); }
+/* 不正解: ぶっ ぶー（ブザー） */
+function buzz(t0,dur){ const o=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain();
+  o.type='square'; o.frequency.value=150; o2.type='square'; o2.frequency.value=146;
+  g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(0.16,t0+0.01);
+  g.gain.setValueAtTime(0.16,t0+Math.max(0.02,dur-0.03)); g.gain.linearRampToValueAtTime(0,t0+dur);
+  o.connect(g); o2.connect(g); g.connect(AC.destination);
+  o.start(t0);o2.start(t0);o.stop(t0+dur);o2.stop(t0+dur); }
+function playWrong(){ if(!AC)return; const t=AC.currentTime; buzz(t,0.15); buzz(t+0.22,0.45); }
+/* 全問クリア: 明るいファンファーレ */
+function playFanfare(){ if(!AC)return; const t=AC.currentTime;
+  [523,659,784,1046].forEach((f,i)=>bell(f,t+i*0.11,0.35,0.3));
+  bell(1568,t+0.5,0.6,0.3); bell(2093,t+0.64,0.9,0.26); }
 /* 端末にある中で「一番自然な声」を選ぶ（compactの機械音を避ける） */
 let VOICE_EN=null, VOICE_JA=null;
 function pickVoices(){
@@ -389,7 +411,6 @@ function speak(text,lang){ try{ speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text); const ja=(lang==='ja-JP'); u.lang=lang||'en-US';
   const v=ja?VOICE_JA:VOICE_EN; if(v) u.voice=v;
   u.rate=ja?1.0:0.85; u.pitch=1.05; speechSynthesis.speak(u);}catch(e){} }
-const PRAISE=['よくできたね！','すごい！','せいかい！','じょうずだね！','やったね！'];
 
 /* ============================================================
    ゲーム
@@ -432,10 +453,8 @@ function render(){
 function choose(isRight, cardEl){
   if(locked) return; locked=true;
   if(isRight){ cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
-    setTimeout(()=>speak(PRAISE[rnd(PRAISE.length)],'ja-JP'),120);
     queue.shift(); solved++; setTimeout(render,1000);
   }else{ cardEl.classList.add('wrong'); playWrong();
-    setTimeout(()=>speak('もういちど！','ja-JP'),100);
     queue.push(queue.shift()); setTimeout(render,900);
   }
 }
@@ -446,7 +465,7 @@ function sparkle(){ const box=el('praise'); const ems=['⭐','🌟','✨','🎉'
     box.appendChild(s); setTimeout(()=>s.remove(),1300); } }
 function finish(){ if(activeDate) markDone(activeDate);
   el('doneMsg').textContent='30もん ぜんぶ せいかい！ また あそんでね！';
-  el('doneScreen').classList.remove('hidden'); speak('ぜんぶ できたね！すごい！','ja-JP'); }
+  el('doneScreen').classList.remove('hidden'); playFanfare(); }
 
 el('homeBtn').onclick=goHome;
 el('doneHomeBtn').onclick=goHome;
