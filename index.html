@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="えいごクイズ">
 <meta name="theme-color" content="#ff8a5b">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>えいご 30もんクイズ</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
@@ -106,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.9</div>
+  <div class="ver">ver.10</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -177,7 +178,8 @@ const V = {
 };
 const NUMW=['zero','one','two','three','four','five','six','seven','eight','nine','ten',
   'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
-const COUNT_OBJ=['🍎','⭐','🐶','🍓','🚗','🌸','🐟','🎈','🍌','🐱','🧸','⚽'];
+const COUNT_OBJ=['🍎','⭐','🐶','🍓','🚗','🌸','🐟','🎈','🍌','🐱','🧸','⚽',
+  '🐰','🌟','🍰','🐸','🚌','🎁','🐝','🦋','🍇','🐥','🌷','🍭','🐞','🍒','🚙','🌻'];
 const CVC=[['cat','🐱'],['dog','🐶'],['pig','🐷'],['cow','🐮'],['bus','🚌'],['sun','☀️'],['bed','🛏️'],['cup','☕'],
   ['box','📦'],['fox','🦊'],['egg','🥚'],['pen','🖊️'],['bag','👜'],['hat','🎩'],['bee','🐝'],['car','🚗']];
 
@@ -219,7 +221,7 @@ function qPicToWord(cat, nWrong, lv){
 }
 /* 数える */
 function qCount(){
-  const n=1+rnd(10); const o=sample(COUNT_OBJ);
+  const n=1+rnd(12); const o=sample(COUNT_OBJ);
   const correct=cNum(n); correct.correct=true;
   let w; do{ w=1+rnd(10);}while(w===n);
   return {level:2, prompt:{kind:'emojis', emojis:o.repeat(n), audio:{text:'How many?'}}, hint:'いくつ かな？',
@@ -227,7 +229,7 @@ function qCount(){
 }
 /* 最初の音（フォニックス） */
 function qPhonics(){
-  const cats=['animal','food','vehicle']; const w=sample(V[sample(cats)]);
+  const cats=['animal','food','vehicle','nature','clothes','body']; const w=sample(V[sample(cats)]);
   const first=w[0][0].toUpperCase();
   let dl; do{ dl=String.fromCharCode(65+rnd(26)); }while(dl===first);
   const correct=cLetter(first); correct.correct=true;
@@ -257,6 +259,14 @@ function qUpperLower(){
   const correct=cText(lo); correct.correct=true;
   return {level:3, prompt:{kind:'word', text:up, audio:{text:up}}, hint:'おなじ ちいさい もじは？',
           options:[correct, cText(String.fromCharCode(97+dj))]};
+}
+/* 小文字→大文字（レベル4） */
+function qLowerUpper(){
+  const i=rnd(26); const up=String.fromCharCode(65+i); const lo=String.fromCharCode(97+i);
+  let dj; do{ dj=rnd(26);}while(dj===i);
+  const correct=cText(up); correct.correct=true;
+  return {level:4, prompt:{kind:'word', text:lo, audio:{text:lo}}, hint:'おなじ おおきい もじは？',
+          options:[correct, cText(String.fromCharCode(65+dj))]};
 }
 /* たんごを よむ CVC（レベル3・絵をえらぶ） */
 function qCVC(){
@@ -290,38 +300,47 @@ function uniq(gen, n, keyf){
   while(out.length<n && guard++<n*40){ const q=gen(); const k=keyf(q); if(!seen.has(k)){seen.add(k); out.push(q);} }
   return out;
 }
+/* 問題の「内容キー」: これが同じものは同一問題とみなし全体で1つに絞る */
+function ckeyOf(q){ const p=q.prompt; let k=p.kind+'|';
+  if(p.kind==='word')k+=p.text; else if(p.kind==='pic')k+=p.emoji+(p.word||'');
+  else if(p.kind==='emojis')k+=p.emojis; else if(p.kind==='math')k+=p.a+p.op+p.b;
+  const c=q.options.find(o=>o.correct); return k+'|'+(c?c.kind+':'+c.v:''); }
+
 function buildPool(){
   RNG=mulberry32(20260719);   // 固定シード: いつ開いても同じプール
   let L1=[], L2=[], L3=[], L4=[], L5=[];
-  // レベル1: 基本語彙（英単語→絵/色）両方向で厚く
+  // レベル1: 基本語彙（英単語→絵/色）
   ['color','animal','food','vehicle','shape','body'].forEach(c=>{
     V[c].forEach(w=>{ const d=sample(V[c],w); const mk=c==='color'?cColor:cEmoji;
       const correct=mk(w); correct.correct=true;
       L1.push({level:1, prompt:{kind:'word',text:w[0],audio:{text:w[0]}}, hint:'えいごを きいて えらぼう', options:[correct, mk(d)]}); });
   });
   // レベル2: 数える・フォニックス・読み導入・追加語彙
-  L2=L2.concat(uniq(qCount,110,q=>'c'+q.prompt.emojis));
-  L2=L2.concat(uniq(qPhonics,60,q=>'p'+q.prompt.emoji+q.options[0].v));
+  L2=L2.concat(uniq(qCount,260,q=>'c'+q.prompt.emojis));
+  L2=L2.concat(uniq(qPhonics,80,q=>'p'+q.prompt.emoji+q.options.find(o=>o.correct).v));
   ['nature','clothes','feeling','weather'].forEach(c=>{
     V[c].forEach(w=>{ const d=sample(V[c],w);
       const correct=cEmoji(w); correct.correct=true;
       L2.push({level:2, prompt:{kind:'word',text:w[0],audio:{text:w[0]}}, hint:'えいごを きいて えらぼう', options:[correct, cEmoji(d)]}); });
   });
-  ['animal','food','vehicle'].forEach(c=> L2=L2.concat(uniq(()=>qPicToWord(c,1,2),12,q=>'w'+q.prompt.emoji)) );
-  // レベル3: たし算(〜10)・大小文字・CVC・11-20
+  ['animal','food','vehicle','nature','clothes'].forEach(c=> L2=L2.concat(uniq(()=>qPicToWord(c,1,2),V[c].length,q=>'w'+q.prompt.emoji)) );
+  // レベル3: たし算(〜10)・大文字→小文字・CVC・11-20
   L3=L3.concat(uniq(()=>qAdd(10),45,q=>`a${q.prompt.a}+${q.prompt.b}`));
   L3=L3.concat(uniq(qUpperLower,26,q=>'u'+q.prompt.text));
   L3=L3.concat(uniq(qCVC,16,q=>'v'+q.prompt.text));
   L3=L3.concat(uniq(qBigNum,10,q=>'n'+q.prompt.text));
-  // レベル4: ひき算(〜10)・たし算(〜20)・読み(絵→単語 3択)
+  // レベル4: ひき算(〜10)・たし算(11〜20)・小文字→大文字・読み(絵→単語 3択)
   L4=L4.concat(uniq(()=>qSub(10),45,q=>`s${q.prompt.a}-${q.prompt.b}`));
-  L4=L4.concat(uniq(()=>qAdd(20),120,q=>`A${q.prompt.a}+${q.prompt.b}`));
-  ['animal','food','nature','clothes'].forEach(c=> L4=L4.concat(uniq(()=>qPicToWord(c,2,4),12,q=>'W'+q.prompt.emoji)) );
-  // レベル5: かけ算・ひき算(〜20)・読み(3択・むずかしめ)
-  L5=L5.concat(uniq(()=>qMul(5),25,q=>`m${q.prompt.a}x${q.prompt.b}`));
-  L5=L5.concat(uniq(()=>qMul(9),60,q=>`M${q.prompt.a}x${q.prompt.b}`));
-  L5=L5.concat(uniq(()=>qSub(20),120,q=>`S${q.prompt.a}-${q.prompt.b}`));
-  const pool=[].concat(shuffle(L1), shuffle(L2), shuffle(L3), shuffle(L4), shuffle(L5));
+  L4=L4.concat(uniq(()=>qAdd(20),190,q=>`A${q.prompt.a}+${q.prompt.b}`));
+  L4=L4.concat(uniq(qLowerUpper,26,q=>'l'+q.prompt.text));
+  ['animal','food','nature','clothes','feeling'].forEach(c=> L4=L4.concat(uniq(()=>qPicToWord(c,2,4),V[c].length,q=>'W'+q.prompt.emoji)) );
+  // レベル5: かけ算・ひき算(11〜20)
+  L5=L5.concat(uniq(()=>qMul(9),81,q=>`M${q.prompt.a}x${q.prompt.b}`));
+  L5=L5.concat(uniq(()=>qSub(20),190,q=>`S${q.prompt.a}-${q.prompt.b}`));
+  // 全体を結合し「内容が完全にユニーク」になるよう重複排除（過去問が二度と出ない核）
+  const raw=[].concat(shuffle(L1), shuffle(L2), shuffle(L3), shuffle(L4), shuffle(L5));
+  const seen=new Set(), pool=[];
+  for(const q of raw){ const k=ckeyOf(q); if(!seen.has(k)){ seen.add(k); pool.push(q); } }
   RNG=Math.random;            // ゲーム中の表示順などは通常のランダムに戻す
   return pool;
 }
