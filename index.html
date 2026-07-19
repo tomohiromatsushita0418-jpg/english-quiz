@@ -106,7 +106,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.5</div>
+  <div class="ver">ver.6</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -373,8 +373,22 @@ function tone(f,t0,dur,type,g){ const o=AC.createOscillator(),ga=AC.createGain()
   o.connect(ga); ga.connect(AC.destination); o.start(t0); o.stop(t0+dur); }
 function playCorrect(){ if(!AC)return; const t=AC.currentTime; [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*0.09,0.25,'triangle',0.22)); }
 function playWrong(){ if(!AC)return; const t=AC.currentTime; tone(311.1,t,0.18,'sine',0.15); tone(233.1,t+0.12,0.22,'sine',0.15); }
-function speak(text,lang){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=lang||'en-US';
-  u.rate=(!lang||lang==='en-US')?0.8:1.0; speechSynthesis.speak(u);}catch(e){} }
+/* 端末にある中で「一番自然な声」を選ぶ（compactの機械音を避ける） */
+let VOICE_EN=null, VOICE_JA=null;
+function pickVoices(){
+  const vs=(speechSynthesis.getVoices&&speechSynthesis.getVoices())||[];
+  const en=vs.filter(v=>/^en/i.test(v.lang));
+  VOICE_EN = en.find(v=>/(enhanced|premium|siri|neural)/i.test(v.name))
+          || en.find(v=>/(samantha|ava|allison|susan|karen|aaron|nicky|daniel)/i.test(v.name))
+          || en.find(v=>/en-US/i.test(v.lang)) || en[0] || null;
+  const ja=vs.filter(v=>/^ja/i.test(v.lang));
+  VOICE_JA = ja.find(v=>/(enhanced|premium|siri|kyoko|o-ren|hattori)/i.test(v.name)) || ja[0] || null;
+}
+if('speechSynthesis' in window){ pickVoices(); speechSynthesis.onvoiceschanged=pickVoices; }
+function speak(text,lang){ try{ speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); const ja=(lang==='ja-JP'); u.lang=lang||'en-US';
+  const v=ja?VOICE_JA:VOICE_EN; if(v) u.voice=v;
+  u.rate=ja?1.0:0.85; u.pitch=1.05; speechSynthesis.speak(u);}catch(e){} }
 const PRAISE=['よくできたね！','すごい！','せいかい！','じょうずだね！','やったね！'];
 
 /* ============================================================
