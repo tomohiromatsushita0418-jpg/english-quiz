@@ -11,19 +11,44 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>えいご 30もんクイズ</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
+      user-select:none; -webkit-user-select:none; }
   html,body { height:100%; font-family:'Hiragino Maru Gothic ProN','Hiragino Sans',sans-serif;
     background:linear-gradient(160deg,#fff7ef,#ffe9d6); overflow:hidden; }
-  #app { height:100%; display:flex; flex-direction:column; }
+  .screen { position:fixed; inset:0; display:flex; flex-direction:column; }
+  .hidden { display:none !important; }
 
-  /* ヘッダー（進捗） */
-  .top { padding:14px 18px 6px; }
+  /* ====== ホーム画面 ====== */
+  #home { background:linear-gradient(160deg,#fff7ef,#ffe9d6); }
+  .home-head { padding:26px 20px 10px; text-align:center; }
+  .home-head .bear { font-size:70px; }
+  .home-head h1 { font-size:28px; color:#e8743b; margin-top:2px; }
+  .home-head p { font-size:14px; color:#a07b3a; margin-top:4px; }
+  .list { flex:1; overflow-y:auto; padding:8px 16px 24px; -webkit-overflow-scrolling:touch; }
+  .day { display:flex; align-items:center; gap:14px; background:#fff; border:3px solid #ffe2c2;
+    border-radius:18px; padding:16px 18px; margin:10px 0; box-shadow:0 4px 0 #ffe2c277; cursor:pointer; }
+  .day:active { transform:scale(.98); }
+  .day.today { border-color:#ffb347; background:linear-gradient(135deg,#fff3d6,#ffe0c0); }
+  .day .icon { font-size:34px; }
+  .day .meta { flex:1; }
+  .day .meta .t { font-size:20px; font-weight:900; color:#c4622a; }
+  .day .meta .s { font-size:13px; color:#9a7b54; }
+  .day .go { font-size:16px; font-weight:900; color:#fff; background:linear-gradient(135deg,#ffb347,#ff7b54);
+    padding:8px 16px; border-radius:24px; }
+  .day .done { font-size:26px; }
+
+  /* ====== クイズ画面 ====== */
+  .top { padding:12px 16px 6px; display:flex; align-items:center; gap:12px; }
+  .homebtn { flex:none; width:46px; height:46px; border-radius:50%; background:#fff;
+    border:3px solid #ffd6a5; display:flex; align-items:center; justify-content:center;
+    font-size:24px; cursor:pointer; box-shadow:0 3px 0 #ffd6a577; }
+  .homebtn:active { transform:scale(.92); }
+  .progress { flex:1; }
   .bar { height:16px; background:#ffe2c2; border-radius:20px; overflow:hidden; }
   .bar > i { display:block; height:100%; width:0; border-radius:20px;
     background:linear-gradient(90deg,#ffb347,#ff8a5b); transition:width .4s; }
-  .count { text-align:center; font-size:14px; color:#c4622a; font-weight:800; margin-top:6px; }
+  .count { font-size:13px; color:#c4622a; font-weight:800; margin-top:4px; text-align:center; }
 
-  /* 出題 */
   .stage { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 16px; }
   .prompt { text-align:center; margin-bottom:18px; }
   .prompt .word { font-size:64px; font-weight:900; color:#2b8a5b; line-height:1.05; }
@@ -34,47 +59,62 @@
 
   .cards { display:flex; gap:20px; width:100%; max-width:620px; }
   .card { flex:1; aspect-ratio:1/1; border-radius:28px; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; cursor:pointer; position:relative;
-    box-shadow:0 10px 0 rgba(0,0,0,.10); border:6px solid #ffffff; transition:transform .12s; }
+    align-items:center; justify-content:center; cursor:pointer; position:relative; background:#fff;
+    box-shadow:0 10px 0 rgba(0,0,0,.10); border:6px solid #ffffff; transition:transform .12s;
+    touch-action:manipulation; }
   .card:active { transform:scale(.96); }
-  .card .face { font-size:96px; line-height:1; }
-  .card .swatch { width:60%; height:52%; border-radius:20px; border:4px solid rgba(0,0,0,.08); }
+  .card .face { font-size:96px; line-height:1; pointer-events:none; }
+  .card .swatch { width:60%; height:52%; border-radius:20px; border:4px solid rgba(0,0,0,.08); pointer-events:none; }
   .card .label { margin-top:10px; font-size:30px; font-weight:900; color:#3a3a3a;
-    background:#ffffffcc; padding:2px 16px; border-radius:14px; }
+    background:#ffffffcc; padding:2px 16px; border-radius:14px; pointer-events:none; }
   .card.wrong { animation:shake .4s; }
   .card.right { animation:pop .5s; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)}
     50%{transform:translateX(10px)} 75%{transform:translateX(-6px)} }
   @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
 
-  /* オーバーレイ（正解演出/スタート/完了） */
+  /* ====== 演出/オーバーレイ ====== */
   .overlay { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center;
-    justify-content:center; gap:20px; background:rgba(255,247,239,.96); z-index:10; text-align:center; padding:24px; }
-  .overlay.hidden { display:none; }
+    justify-content:center; gap:20px; background:rgba(255,247,239,.96); z-index:30; text-align:center; padding:24px; }
   .big-emoji { font-size:120px; animation:bounce .6s infinite alternate; }
   @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-18px)} }
-  .overlay h1 { font-size:40px; color:#e8743b; }
+  .overlay h1 { font-size:38px; color:#e8743b; }
   .overlay p { font-size:20px; color:#7a5a3a; }
-  .btn { font-size:26px; font-weight:900; color:#fff; background:linear-gradient(135deg,#ffb347,#ff7b54);
-    border:none; padding:18px 44px; border-radius:40px; box-shadow:0 8px 0 #e0663d; cursor:pointer; }
+  .btn { font-size:24px; font-weight:900; color:#fff; background:linear-gradient(135deg,#ffb347,#ff7b54);
+    border:none; padding:16px 40px; border-radius:40px; box-shadow:0 8px 0 #e0663d; cursor:pointer; }
   .btn:active { transform:translateY(4px); box-shadow:0 4px 0 #e0663d; }
+  .btn2 { background:#fff; color:#c4622a; border:3px solid #ffd6a5; box-shadow:0 6px 0 #ffd6a577; font-size:20px; padding:12px 30px; }
 
-  /* 正解の花吹雪 */
-  .praise { position:fixed; inset:0; pointer-events:none; z-index:20; }
-  .spark { position:absolute; font-size:34px; animation:fall 1.1s ease-in forwards; }
+  .praise { position:fixed; inset:0; pointer-events:none; z-index:40; }
+  .spark { position:absolute; animation:fall 1.1s ease-in forwards; }
   @keyframes fall { 0%{transform:translateY(-40px) rotate(0); opacity:1}
     100%{transform:translateY(90vh) rotate(360deg); opacity:0} }
   .flash { position:fixed; inset:0; background:radial-gradient(circle,#fff59d55,transparent 60%);
-    z-index:15; pointer-events:none; opacity:0; }
+    z-index:35; pointer-events:none; opacity:0; }
   .flash.on { animation:flash .5s; }
   @keyframes flash { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0} }
 </style>
 </head>
 <body>
-<div id="app">
+
+<!-- ====== ホーム画面（毎日の一覧） ====== -->
+<div class="screen" id="home">
+  <div class="home-head">
+    <div class="bear">🐻</div>
+    <h1>えいご 30もんクイズ</h1>
+    <p>ひづけを えらんで はじめよう！</p>
+  </div>
+  <div class="list" id="dayList"></div>
+</div>
+
+<!-- ====== クイズ画面 ====== -->
+<div class="screen hidden" id="quiz">
   <div class="top">
-    <div class="bar"><i id="barfill"></i></div>
-    <div class="count" id="count"></div>
+    <div class="homebtn" id="homeBtn">🏠</div>
+    <div class="progress">
+      <div class="bar"><i id="barfill"></i></div>
+      <div class="count" id="count"></div>
+    </div>
   </div>
   <div class="stage">
     <div class="prompt">
@@ -91,29 +131,18 @@
 <div class="flash" id="flash"></div>
 <div class="praise" id="praise"></div>
 
-<!-- スタート画面 -->
-<div class="overlay" id="startScreen">
-  <div class="big-emoji">🐻</div>
-  <h1>きょうの えいご 30もん</h1>
-  <p id="startDate"></p>
-  <button class="btn" id="startBtn">▶ はじめる</button>
-  <p style="font-size:14px;color:#a07b3a">音がでます。おうちの人といっしょにね😊</p>
-</div>
-
 <!-- 完了画面 -->
 <div class="overlay hidden" id="doneScreen">
   <div class="big-emoji">🎉</div>
   <h1>ぜんぶ できたね！</h1>
   <p id="doneMsg"></p>
   <button class="btn" id="againBtn">もういちど あそぶ</button>
+  <button class="btn btn2" id="doneHomeBtn">🏠 ホームへ</button>
 </div>
 
 <script>
-/* ===================== 問題バンク =====================
-   face: {t:'c',v:色} 色スウォッチ / {t:'e',v:絵文字} / {t:'n',v:数字}
-   同じ cat の中から「まちがいカード」を選ぶ。 */
+/* ===================== 問題バンク ===================== */
 const BANK = [
-  // --- いろ colors ---
   {cat:'color', en:'red',    ja:'あか',   read:'レッド',   face:{t:'c',v:'#e53935'}},
   {cat:'color', en:'blue',   ja:'あお',   read:'ブルー',   face:{t:'c',v:'#1e88e5'}},
   {cat:'color', en:'yellow', ja:'きいろ', read:'イエロー', face:{t:'c',v:'#fdd835'}},
@@ -124,7 +153,6 @@ const BANK = [
   {cat:'color', en:'black',  ja:'くろ',   read:'ブラック', face:{t:'c',v:'#212121'}},
   {cat:'color', en:'white',  ja:'しろ',   read:'ホワイト', face:{t:'c',v:'#fafafa'}},
   {cat:'color', en:'brown',  ja:'ちゃいろ',read:'ブラウン',face:{t:'c',v:'#6d4c41'}},
-  // --- どうぶつ animals ---
   {cat:'animal', en:'dog',     ja:'いぬ',   read:'ドッグ',    face:{t:'e',v:'🐶'}},
   {cat:'animal', en:'cat',     ja:'ねこ',   read:'キャット',  face:{t:'e',v:'🐱'}},
   {cat:'animal', en:'bird',    ja:'とり',   read:'バード',    face:{t:'e',v:'🐦'}},
@@ -139,7 +167,6 @@ const BANK = [
   {cat:'animal', en:'rabbit',  ja:'うさぎ', read:'ラビット',  face:{t:'e',v:'🐰'}},
   {cat:'animal', en:'bear',    ja:'くま',   read:'ベア',      face:{t:'e',v:'🐻'}},
   {cat:'animal', en:'sheep',   ja:'ひつじ', read:'シープ',    face:{t:'e',v:'🐑'}},
-  // --- たべもの food ---
   {cat:'food', en:'apple',     ja:'りんご', read:'アップル',  face:{t:'e',v:'🍎'}},
   {cat:'food', en:'banana',    ja:'バナナ', read:'バナナ',    face:{t:'e',v:'🍌'}},
   {cat:'food', en:'grapes',    ja:'ぶどう', read:'グレープ',  face:{t:'e',v:'🍇'}},
@@ -148,110 +175,129 @@ const BANK = [
   {cat:'food', en:'milk',      ja:'ミルク', read:'ミルク',    face:{t:'e',v:'🥛'}},
   {cat:'food', en:'bread',     ja:'パン',   read:'ブレッド',  face:{t:'e',v:'🍞'}},
   {cat:'food', en:'egg',       ja:'たまご', read:'エッグ',    face:{t:'e',v:'🥚'}},
-  // --- のりもの vehicles ---
   {cat:'vehicle', en:'bus',     ja:'バス',   read:'バス',    face:{t:'e',v:'🚌'}},
   {cat:'vehicle', en:'train',   ja:'でんしゃ',read:'トレイン',face:{t:'e',v:'🚃'}},
   {cat:'vehicle', en:'airplane',ja:'ひこうき',read:'エアプレイン',face:{t:'e',v:'✈️'}},
   {cat:'vehicle', en:'car',     ja:'くるま', read:'カー',    face:{t:'e',v:'🚗'}},
   {cat:'vehicle', en:'boat',    ja:'ふね',   read:'ボート',  face:{t:'e',v:'⛵'}},
-  // --- かず numbers ---
   {cat:'number', en:'one',   ja:'いち', read:'ワン',   face:{t:'n',v:'1'}},
   {cat:'number', en:'two',   ja:'に',   read:'トゥー', face:{t:'n',v:'2'}},
   {cat:'number', en:'three', ja:'さん', read:'スリー', face:{t:'n',v:'3'}},
   {cat:'number', en:'four',  ja:'よん', read:'フォー', face:{t:'n',v:'4'}},
   {cat:'number', en:'five',  ja:'ご',   read:'ファイブ',face:{t:'n',v:'5'}},
 ];
+const DAILY = Math.min(30, BANK.length);
+const el = id => document.getElementById(id);
 
-const DAILY = 30;
-
-/* ---- 日付シードで毎日ちがう30問を決める（サーバー不要） ---- */
-function todayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+/* ---- 日付ユーティリティ ---- */
+function dateKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+function seedFromDate(d){ return d.getFullYear()*372 + (d.getMonth()+1)*31 + d.getDate(); }
 function seededShuffle(arr, seed){
-  const a=arr.slice(); let s=seed;
+  const a=arr.slice(); let s=seed%233280;
   const rnd=()=>{ s=(s*9301+49297)%233280; return s/233280; };
   for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
-function seedFromDate(){ const d=new Date(); return (d.getFullYear()*372+(d.getMonth()+1)*31+d.getDate()); }
+function isDone(d){ return localStorage.getItem('eq_done_'+dateKey(d))==='1'; }
+function markDone(d){ localStorage.setItem('eq_done_'+dateKey(d),'1'); }
+
+/* ===================== ホーム（毎日の一覧） ===================== */
+function renderHome(){
+  const list=el('dayList'); list.innerHTML='';
+  const today=new Date(); today.setHours(0,0,0,0);
+  for(let i=0;i<14;i++){
+    const d=new Date(today); d.setDate(today.getDate()-i);
+    const done=isDone(d);
+    const label = i===0 ? 'きょう' : i===1 ? 'きのう' : `${d.getMonth()+1}/${d.getDate()}`;
+    const sub = i===0 ? `${d.getMonth()+1}/${d.getDate()} のもんだい` : (done?'クリアずみ':'まだ');
+    const row=document.createElement('div');
+    row.className='day'+(i===0?' today':'');
+    row.innerHTML=`<div class="icon">${done?'🌟':'📘'}</div>
+      <div class="meta"><div class="t">${label}</div><div class="s">${sub}</div></div>
+      ${done?'<div class="done">✅</div>':'<div class="go">▶ あそぶ</div>'}`;
+    row.onclick=()=>startDay(d);
+    list.appendChild(row);
+  }
+}
+
+/* ===================== 音 ===================== */
+let AC=null;
+function unlockAudio(){
+  try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);
+  }catch(e){}
+}
+function tone(freq,t0,dur,type,gain){ const o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(gain,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+  o.connect(g);g.connect(AC.destination);o.start(t0);o.stop(t0+dur); }
+function playCorrect(){ if(!AC)return; const t=AC.currentTime;
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*0.09,0.25,'triangle',0.22)); }
+function playWrong(){ if(!AC)return; const t=AC.currentTime;
+  tone(311.1,t,0.18,'sine',0.15); tone(233.1,t+0.12,0.22,'sine',0.15); }
+function speak(text,lang){ try{ speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=(lang==='en-US')?0.8:1.0;
+  speechSynthesis.speak(u);}catch(e){} }
+const PRAISE=['よくできたね！','すごい！','せいかい！','じょうずだね！','やったね！'];
+
+/* ===================== ゲーム ===================== */
+let queue=[], solved=0, activeDate=null, locked=false;
 
 function pickDistractor(item){
   const same=BANK.filter(b=>b.cat===item.cat && b.en!==item.en);
   return same[Math.floor(Math.random()*same.length)];
 }
-
-/* ---- 音 ---- */
-let AC=null;
-function unlockAudio(){
-  if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); }
-  if(AC.state==='suspended') AC.resume();
-  // iOSの発話ロック解除（無音を一度流す）
-  try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u);}catch(e){}
+function buildQueue(d){
+  const chosen=seededShuffle(BANK, seedFromDate(d)).slice(0, DAILY);
+  queue=chosen.map(it=>({item:it})); solved=0; activeDate=d;
 }
-function tone(freq, t0, dur, type='sine', gain=0.2){
-  const o=AC.createOscillator(), g=AC.createGain();
-  o.type=type; o.frequency.value=freq;
-  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0+0.02);
-  g.gain.exponentialRampToValueAtTime(0.001, t0+dur);
-  o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+dur);
+function showScreen(name){
+  el('home').classList.toggle('hidden', name!=='home');
+  el('quiz').classList.toggle('hidden', name!=='quiz');
 }
-function playCorrect(){ if(!AC)return; const t=AC.currentTime;
-  [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*0.09,0.25,'triangle',0.22)); }
-function playWrong(){ if(!AC)return; const t=AC.currentTime; tone(311.1,t,0.18,'sine',0.15); tone(233.1,t+0.12,0.22,'sine',0.15); }
+function startDay(d){ unlockAudio(); buildQueue(d); el('doneScreen').classList.add('hidden');
+  showScreen('quiz'); render(); }
+function goHome(){ try{speechSynthesis.cancel();}catch(e){}
+  el('doneScreen').classList.add('hidden'); renderHome(); showScreen('home'); }
 
-function speak(text, lang){
-  try{ speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=(lang==='en-US')?0.8:1.0;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
-const PRAISE=['よくできたね！','すごい！','せいかい！','じょうずだね！','やったね！'];
-
-/* ---- ゲーム状態 ---- */
-let queue=[], solved=0;
-function buildQueue(){
-  const seed=seedFromDate();
-  const chosen=seededShuffle(BANK, seed).slice(0, Math.min(DAILY,BANK.length));
-  queue=chosen.map(it=>({item:it}));
-  solved=0;
-}
-
-const el=id=>document.getElementById(id);
-function updateBar(){ const pct=Math.round(solved/Math.min(DAILY,BANK.length)*100);
+function updateBar(){ const pct=Math.round(solved/DAILY*100);
   el('barfill').style.width=pct+'%';
-  el('count').textContent=`せいかい ${solved} / ${Math.min(DAILY,BANK.length)}　（のこり ${queue.length}）`; }
+  el('count').textContent=`せいかい ${solved} / ${DAILY}　（のこり ${queue.length}）`; }
 
 function render(){
   if(queue.length===0){ finish(); return; }
-  const q=queue[0]; const correct=q.item; const wrong=pickDistractor(correct);
+  locked=false;                              // ★ 毎問ロック解除（バグ修正の要）
+  const correct=queue[0].item, wrong=pickDistractor(correct);
   el('word').textContent=correct.en;
   updateBar();
   const order=Math.random()<0.5?[correct,wrong]:[wrong,correct];
   order.forEach((it,idx)=>{
-    const c=el('card'+idx); c.className='card'; c.style.background='#fff';
-    let faceHtml='';
-    if(it.face.t==='c') faceHtml=`<div class="swatch" style="background:${it.face.v}"></div>`;
-    else if(it.face.t==='n') faceHtml=`<div class="face" style="font-size:120px;color:#e8743b">${it.face.v}</div>`;
-    else faceHtml=`<div class="face">${it.face.v}</div>`;
-    c.innerHTML=faceHtml+`<div class="label">${it.ja}</div>`;
-    c.onclick=()=>choose(it===correct, c, correct);
+    const c=el('card'+idx);
+    c.className='card';                       // クラスをリセット（lockは変数管理へ移行）
+    let f = it.face.t==='c' ? `<div class="swatch" style="background:${it.face.v}"></div>`
+          : it.face.t==='n' ? `<div class="face" style="font-size:120px;color:#e8743b">${it.face.v}</div>`
+          : `<div class="face">${it.face.v}</div>`;
+    c.innerHTML=f+`<div class="label">${it.ja}</div>`;
+    c.onclick=()=>choose(it===correct, c);
   });
-  speak(correct.en,'en-US');   // ページ（問題）表示時に英語を読み上げ
+  speak(correct.en,'en-US');
 }
 
-function choose(isRight, cardEl, correct){
-  if(cardEl.dataset.lock) return;
+function choose(isRight, cardEl){
+  if(locked) return;                          // ★ 演出中は両カードとも無効（誤爆防止）
+  locked=true;
   if(isRight){
-    cardEl.dataset.lock=1; cardEl.classList.add('right');
-    playCorrect(); flash(); sparkle();
-    const praise=PRAISE[Math.floor(Math.random()*PRAISE.length)];
-    setTimeout(()=>speak(praise,'ja-JP'),120);
-    queue.shift(); solved++;                 // 正解 → 列から取り除く
+    cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
+    setTimeout(()=>speak(PRAISE[Math.floor(Math.random()*PRAISE.length)],'ja-JP'),120);
+    queue.shift(); solved++;
     setTimeout(render, 1200);
   }else{
     cardEl.classList.add('wrong'); playWrong();
     setTimeout(()=>speak('もういちど！','ja-JP'),100);
-    queue.push(queue.shift());               // まちがい → 列の最後へ（あとでまた出る）
-    setTimeout(()=>{ cardEl.classList.remove('wrong'); render(); }, 900);
+    queue.push(queue.shift());                // まちがい → 列の最後へ（あとで再出題）
+    setTimeout(render, 950);
   }
 }
 
@@ -265,16 +311,20 @@ function sparkle(){ const box=el('praise'); const ems=['⭐','🌟','✨','🎉'
     setTimeout(()=>s.remove(),1300); } }
 
 function finish(){
-  el('doneMsg').textContent=`きょうの30もん ぜんぶ せいかい！ また あした！`;
+  if(activeDate) markDone(activeDate);
+  el('doneMsg').textContent='30もん ぜんぶ せいかい！ また あそんでね！';
   el('doneScreen').classList.remove('hidden');
   speak('ぜんぶ できたね！すごい！','ja-JP');
 }
 
-/* ---- 起動 ---- */
-el('startDate').textContent=todayKey()+' のもんだい';
-el('startBtn').onclick=()=>{ unlockAudio(); buildQueue(); el('startScreen').classList.add('hidden'); render(); };
+/* ---- ボタン ---- */
+el('homeBtn').onclick=goHome;
+el('doneHomeBtn').onclick=goHome;
+el('againBtn').onclick=()=>{ el('doneScreen').classList.add('hidden'); buildQueue(activeDate); render(); };
 el('sound').onclick=()=>{ if(queue[0]) speak(queue[0].item.en,'en-US'); };
-el('againBtn').onclick=()=>{ el('doneScreen').classList.add('hidden'); buildQueue(); render(); };
+
+/* ---- 起動 ---- */
+renderHome();
 </script>
 </body>
 </html>
