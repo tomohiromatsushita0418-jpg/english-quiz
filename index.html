@@ -107,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.12</div>
+  <div class="ver">ver.13</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -156,25 +156,53 @@ const V = {
     ['monkey','モンキー','さる','🐵'],['pig','ピッグ','ぶた','🐷'],['cow','カウ','うし','🐮'],['rabbit','ラビット','うさぎ','🐰'],
     ['bear','ベア','くま','🐻'],['sheep','シープ','ひつじ','🐑'],['tiger','タイガー','とら','🐯'],['horse','ホース','うま','🐴'],
     ['mouse','マウス','ねずみ','🐭'],['penguin','ペンギン','ペンギン','🐧'],['owl','アウル','ふくろう','🦉'],['bee','ビー','はち','🐝'],
-    ['turtle','タートル','かめ','🐢'],['snake','スネイク','へび','🐍'],['giraffe','ジラフ','きりん','🦒'],['fox','フォックス','きつね','🦊']],
+    ['turtle','タートル','かめ','🐢'],['snake','スネイク','へび','🐍'],['giraffe','ジラフ','きりん','🦒'],['fox','フォックス','きつね','🦊'],
+    ['zebra','ゼブラ','しまうま','🦓'],['panda','パンダ','パンダ','🐼'],['koala','コアラ','コアラ','🐨'],['chick','チック','ひよこ','🐤'],
+    ['chicken','チキン','にわとり','🐔'],['whale','ホエール','くじら','🐳'],['dolphin','ドルフィン','いるか','🐬'],['octopus','オクトパス','たこ','🐙'],
+    ['crab','クラブ','かに','🦀'],['snail','スネイル','かたつむり','🐌'],['ant','アント','あり','🐜'],['spider','スパイダー','くも','🕷️'],
+    ['unicorn','ユニコーン','ユニコーン','🦄'],['deer','ディア','しか','🦌'],['wolf','ウルフ','おおかみ','🐺'],['kangaroo','カンガルー','カンガルー','🦘'],
+    ['camel','キャメル','らくだ','🐫'],['hippo','ヒッポ','かば','🦛'],['rhino','ライノ','さい','🦏'],['gorilla','ゴリラ','ゴリラ','🦍'],
+    ['crocodile','クロコダイル','わに','🐊'],['dinosaur','ダイナソー','きょうりゅう','🦕'],['dragon','ドラゴン','ドラゴン','🐉'],['parrot','パロット','おうむ','🦜'],
+    ['eagle','イーグル','わし','🦅'],['peacock','ピーコック','くじゃく','🦚'],['swan','スワン','はくちょう','🦢'],['bat','バット','こうもり','🦇'],
+    ['hedgehog','ヘッジホッグ','はりねずみ','🦔'],['ladybug','レイディバグ','てんとうむし','🐞'],['butterfly','バタフライ','ちょうちょ','🦋'],['lizard','リザード','とかげ','🦎'],
+    ['seal','シール','あざらし','🦭'],['turkey','ターキー','しちめんちょう','🦃']],
   food:[['apple','アップル','りんご','🍎'],['banana','バナナ','バナナ','🍌'],['grapes','グレープ','ぶどう','🍇'],['strawberry','ストロベリー','いちご','🍓'],
     ['orange','オレンジ','みかん','🍊'],['milk','ミルク','ミルク','🥛'],['bread','ブレッド','パン','🍞'],['egg','エッグ','たまご','🥚'],
     ['watermelon','ウォーターメロン','すいか','🍉'],['cherry','チェリー','さくらんぼ','🍒'],['carrot','キャロット','にんじん','🥕'],['tomato','トマト','トマト','🍅'],
-    ['corn','コーン','とうもろこし','🌽'],['rice','ライス','ごはん','🍚'],['cake','ケーキ','ケーキ','🍰'],['ice cream','アイスクリーム','アイス','🍦']],
+    ['corn','コーン','とうもろこし','🌽'],['rice','ライス','ごはん','🍚'],['cake','ケーキ','ケーキ','🍰'],['ice cream','アイスクリーム','アイス','🍦'],
+    ['pizza','ピザ','ピザ','🍕'],['hamburger','ハンバーガー','ハンバーガー','🍔'],['hotdog','ホットドッグ','ホットドッグ','🌭'],['fries','フライ','ポテト','🍟'],
+    ['sandwich','サンドイッチ','サンドイッチ','🥪'],['sushi','スシ','おすし','🍣'],['ramen','ラーメン','ラーメン','🍜'],['donut','ドーナツ','ドーナツ','🍩'],
+    ['cookie','クッキー','クッキー','🍪'],['chocolate','チョコレート','チョコ','🍫'],['candy','キャンディ','あめ','🍬'],['lollipop','ロリポップ','ペロペロ','🍭'],
+    ['pancake','パンケーキ','パンケーキ','🥞'],['cheese','チーズ','チーズ','🧀'],['honey','ハニー','はちみつ','🍯'],['peach','ピーチ','もも','🍑'],
+    ['pear','ペア','なし','🍐'],['pineapple','パイナップル','パイナップル','🍍'],['mango','マンゴー','マンゴー','🥭'],['coconut','ココナッツ','ヤシのみ','🥥'],
+    ['lemon','レモン','レモン','🍋'],['potato','ポテト','じゃがいも','🥔'],['mushroom','マッシュルーム','きのこ','🍄'],['popcorn','ポップコーン','ポップコーン','🍿'],
+    ['tea','ティー','おちゃ','🍵'],['juice','ジュース','ジュース','🧃']],
   vehicle:[['bus','バス','バス','🚌'],['train','トレイン','でんしゃ','🚃'],['airplane','エアプレイン','ひこうき','✈️'],['car','カー','くるま','🚗'],
     ['boat','ボート','ふね','⛵'],['bicycle','バイスィクル','じてんしゃ','🚲'],['truck','トラック','トラック','🚚'],['rocket','ロケット','ロケット','🚀'],
-    ['helicopter','ヘリコプター','ヘリコプター','🚁']],
+    ['helicopter','ヘリコプター','ヘリコプター','🚁'],['ship','シップ','おおきいふね','🚢'],['police car','ポリスカー','パトカー','🚓'],
+    ['ambulance','アンビュランス','きゅうきゅうしゃ','🚑'],['fire truck','ファイアトラック','しょうぼうしゃ','🚒'],['taxi','タクシー','タクシー','🚕'],
+    ['tractor','トラクター','トラクター','🚜'],['scooter','スクーター','キックボード','🛴'],['motorcycle','モーターサイクル','バイク','🏍️']],
   shape:[['circle','サークル','まる','⭕'],['star','スター','ほし','⭐'],['heart','ハート','ハート','❤️'],['square','スクエア','しかく','🟦'],
     ['triangle','トライアングル','さんかく','🔺'],['diamond','ダイヤモンド','ひしがた','🔷']],
   body:[['hand','ハンド','て','✋'],['eye','アイ','め','👁️'],['ear','イヤー','みみ','👂'],['nose','ノーズ','はな','👃'],
     ['mouth','マウス','くち','👄'],['foot','フット','あし','🦶']],
   nature:[['sun','サン','たいよう','☀️'],['moon','ムーン','つき','🌙'],['star','スター','ほし','⭐'],['rain','レイン','あめ','🌧️'],
-    ['cloud','クラウド','くも','☁️'],['snow','スノー','ゆき','❄️'],['tree','ツリー','き','🌳'],['flower','フラワー','はな','🌸'],['rainbow','レインボー','にじ','🌈']],
+    ['cloud','クラウド','くも','☁️'],['snow','スノー','ゆき','❄️'],['tree','ツリー','き','🌳'],['flower','フラワー','はな','🌸'],['rainbow','レインボー','にじ','🌈'],
+    ['mountain','マウンテン','やま','⛰️'],['ocean','オーシャン','うみ','🌊'],['fire','ファイア','ひ','🔥'],['volcano','ボルケーノ','かざん','🌋']],
   clothes:[['hat','ハット','ぼうし','🧢'],['shirt','シャツ','シャツ','👕'],['shoes','シューズ','くつ','👟'],['socks','ソックス','くつした','🧦'],
-    ['dress','ドレス','ワンピース','👗'],['pants','パンツ','ズボン','👖'],['gloves','グローブ','てぶくろ','🧤']],
+    ['dress','ドレス','ワンピース','👗'],['pants','パンツ','ズボン','👖'],['gloves','グローブ','てぶくろ','🧤'],
+    ['crown','クラウン','おうかん','👑'],['ring','リング','ゆびわ','💍'],['glasses','グラシズ','めがね','👓'],
+    ['backpack','バックパック','リュック','🎒'],['umbrella','アンブレラ','かさ','☂️']],
   feeling:[['happy','ハッピー','うれしい','😊'],['sad','サッド','かなしい','😢'],['angry','アングリー','おこる','😠'],['sleepy','スリーピー','ねむい','😴'],
     ['hungry','ハングリー','おなかすいた','🤤'],['surprised','サプライズド','びっくり','😲']],
   weather:[['sunny','サニー','はれ','☀️'],['rainy','レイニー','あめ','🌧️'],['windy','ウィンディ','かぜ','💨'],['snowy','スノーウィ','ゆき','⛄']],
+  toy:[['ball','ボール','ボール','⚽'],['balloon','バルーン','ふうせん','🎈'],['gift','ギフト','プレゼント','🎁'],['teddy bear','テディベア','ぬいぐるみ','🧸'],
+    ['kite','カイト','たこ','🪁'],['drum','ドラム','たいこ','🥁'],['guitar','ギター','ギター','🎸'],['piano','ピアノ','ピアノ','🎹'],
+    ['trumpet','トランペット','トランペット','🎺'],['bell','ベル','ベル','🔔'],['book','ブック','ほん','📚'],['pencil','ペンシル','えんぴつ','✏️'],
+    ['crayon','クレヨン','クレヨン','🖍️'],['clock','クロック','とけい','🕐'],['key','キー','かぎ','🔑'],['scissors','シザーズ','はさみ','✂️']],
+  place:[['house','ハウス','いえ','🏠'],['castle','キャッスル','おしろ','🏰'],['tent','テント','テント','⛺'],['school','スクール','がっこう','🏫']],
+  people:[['baby','ベイビー','あかちゃん','👶'],['boy','ボーイ','おとこのこ','👦'],['girl','ガール','おんなのこ','👧'],['man','マン','おとこのひと','👨'],
+    ['woman','ウーマン','おんなのひと','👩'],['grandma','グランマ','おばあさん','👵'],['grandpa','グランパ','おじいさん','👴']],
 };
 const NUMW=['zero','one','two','three','four','five','six','seven','eight','nine','ten',
   'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
@@ -306,42 +334,28 @@ function ckeyOf(q){ const p=q.prompt; let k=p.kind+'|';
   else if(p.kind==='emojis')k+=p.emojis; else if(p.kind==='math')k+=p.a+p.op+p.b;
   const c=q.options.find(o=>o.correct); return k+'|'+(c?c.kind+':'+c.v:''); }
 
+/* 出題は「英単語を音声で流して、2枚の絵/色から正しい方を当てる」だけ。
+   カテゴリを難易度ティア(1=基本〜3=やや珍しい)に割当て、その順で並べて
+   日が進むほど少しずつ新しい単語に。誤答は同じカテゴリから選ぶ(フェアな2択)。 */
+const TIER={
+  1:['color','animal','food','shape','body'],
+  2:['vehicle','nature','weather','clothes','feeling','people'],
+  3:['toy','place']
+};
 function buildPool(){
   RNG=mulberry32(20260719);   // 固定シード: いつ開いても同じプール
-  let L1=[], L2=[], L3=[], L4=[], L5=[];
-  // レベル1: 基本語彙（英単語→絵/色）
-  ['color','animal','food','vehicle','shape','body'].forEach(c=>{
-    V[c].forEach(w=>{ const d=sample(V[c],w); const mk=c==='color'?cColor:cEmoji;
+  const byLv={1:[],2:[],3:[]};
+  for(const lv of [1,2,3]){ TIER[lv].forEach(cat=>{ const list=V[cat]||[];
+    const mk = cat==='color'?cColor:cEmoji;
+    list.forEach(w=>{ const d=sample(list,w);            // 同カテゴリの別単語を誤答に
       const correct=mk(w); correct.correct=true;
-      L1.push({level:1, prompt:{kind:'word',text:w[0],audio:{text:w[0]}}, hint:'えいごを きいて えらぼう', options:[correct, mk(d)]}); });
-  });
-  // レベル2: 数える・フォニックス・読み導入・追加語彙
-  L2=L2.concat(uniq(qCount,260,q=>'c'+q.prompt.emojis));
-  L2=L2.concat(uniq(qPhonics,80,q=>'p'+q.prompt.emoji+q.options.find(o=>o.correct).v));
-  ['nature','clothes','feeling','weather'].forEach(c=>{
-    V[c].forEach(w=>{ const d=sample(V[c],w);
-      const correct=cEmoji(w); correct.correct=true;
-      L2.push({level:2, prompt:{kind:'word',text:w[0],audio:{text:w[0]}}, hint:'えいごを きいて えらぼう', options:[correct, cEmoji(d)]}); });
-  });
-  ['animal','food','vehicle','nature','clothes'].forEach(c=> L2=L2.concat(uniq(()=>qPicToWord(c,1,2),V[c].length,q=>'w'+q.prompt.emoji)) );
-  // レベル3: たし算(〜10)・大文字→小文字・CVC・11-20
-  L3=L3.concat(uniq(()=>qAdd(10),45,q=>`a${q.prompt.a}+${q.prompt.b}`));
-  L3=L3.concat(uniq(qUpperLower,26,q=>'u'+q.prompt.text));
-  L3=L3.concat(uniq(qCVC,16,q=>'v'+q.prompt.text));
-  L3=L3.concat(uniq(qBigNum,10,q=>'n'+q.prompt.text));
-  // レベル4: ひき算(〜10)・たし算(11〜20)・小文字→大文字・読み(絵→単語 3択)
-  L4=L4.concat(uniq(()=>qSub(10),45,q=>`s${q.prompt.a}-${q.prompt.b}`));
-  L4=L4.concat(uniq(()=>qAdd(20),190,q=>`A${q.prompt.a}+${q.prompt.b}`));
-  L4=L4.concat(uniq(qLowerUpper,26,q=>'l'+q.prompt.text));
-  ['animal','food','nature','clothes','feeling'].forEach(c=> L4=L4.concat(uniq(()=>qPicToWord(c,2,4),V[c].length,q=>'W'+q.prompt.emoji)) );
-  // レベル5: かけ算・ひき算(11〜20)
-  L5=L5.concat(uniq(()=>qMul(9),81,q=>`M${q.prompt.a}x${q.prompt.b}`));
-  L5=L5.concat(uniq(()=>qSub(20),190,q=>`S${q.prompt.a}-${q.prompt.b}`));
-  // 全体を結合し「内容が完全にユニーク」になるよう重複排除（過去問が二度と出ない核）
-  const raw=[].concat(shuffle(L1), shuffle(L2), shuffle(L3), shuffle(L4), shuffle(L5));
-  const seen=new Set(), pool=[];
+      byLv[lv].push({level:lv, prompt:{kind:'word',text:w[0],audio:{text:w[0]}},
+                     hint:'えいごを きいて えらぼう', options:[correct, mk(d)]}); });
+  }); }
+  const raw=[].concat(shuffle(byLv[1]), shuffle(byLv[2]), shuffle(byLv[3]));
+  const seen=new Set(), pool=[];   // 内容重複排除(star/orange等)＝過去問が二度と出ない核
   for(const q of raw){ const k=ckeyOf(q); if(!seen.has(k)){ seen.add(k); pool.push(q); } }
-  RNG=Math.random;            // ゲーム中の表示順などは通常のランダムに戻す
+  RNG=Math.random;
   return pool;
 }
 const POOL=buildPool();
