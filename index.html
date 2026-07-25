@@ -107,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.13</div>
+  <div class="ver">ver.14</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -455,9 +455,26 @@ function speak(text,lang){ try{ speechSynthesis.cancel();
    ゲーム
    ============================================================ */
 let queue=[], solved=0, activeDate=null, locked=false;
+/* その日の単語データを取得。words/<日付>.json があればGemini生成の新語を使い、
+   無ければ内蔵200語のプールにフォールバック（＝いつでも動く）。 */
+function mkWordQ(w, set){
+  let d; let g=0; do{ d=set[rnd(set.length)]; }while(d && d.emoji===w.emoji && set.length>1 && g++<20);
+  const correct={kind:'emoji', v:w.emoji, label:w.ja||'', correct:true};
+  return {level:1, prompt:{kind:'word', text:w.en, audio:{text:w.en}},
+          hint:'えいごを きいて えらぼう', options:[correct, {kind:'emoji', v:(d?d.emoji:'❓'), label:(d?d.ja:'')}]};
+}
+async function loadQuestions(d){
+  try{ const r=await fetch('words/'+dateKey(d)+'.json?v='+Date.now(), {cache:'no-store'});
+    if(r.ok){ const data=await r.json(); const ws=(data&&data.words)||[];
+      if(ws.length>=2){ return ws.map(w=>mkWordQ(w, ws)); } } }catch(e){}
+  return daySlice(d).map(q=>Object.assign({},q));   // フォールバック(内蔵語彙)
+}
 function buildQueue(d){ queue=daySlice(d).map(q=>Object.assign({},q)); solved=0; activeDate=d; }
 function showScreen(n){ el('home').classList.toggle('hidden',n!=='home'); el('quiz').classList.toggle('hidden',n!=='quiz'); }
-function startDay(d){ unlockAudio(); buildQueue(d); el('doneScreen').classList.add('hidden'); showScreen('quiz'); render(); }
+async function startDay(d){ unlockAudio(); activeDate=d; solved=0;
+  el('doneScreen').classList.add('hidden'); showScreen('quiz');
+  el('prompt').innerHTML='<div class="hint">よみこみ中…</div>'; el('cards').innerHTML='';
+  queue=await loadQuestions(d); render(); }
 function goHome(){ try{speechSynthesis.cancel();}catch(e){} el('doneScreen').classList.add('hidden'); renderHome(); showScreen('home'); }
 function updateBar(){ const pct=Math.round(solved/DAILY*100); el('barfill').style.width=pct+'%';
   el('count').textContent=`せいかい ${solved} / ${DAILY}　（のこり ${queue.length}）`; }
@@ -508,7 +525,7 @@ function finish(){ if(activeDate) markDone(activeDate);
 
 el('homeBtn').onclick=goHome;
 el('doneHomeBtn').onclick=goHome;
-el('againBtn').onclick=()=>{ el('doneScreen').classList.add('hidden'); buildQueue(activeDate); render(); };
+el('againBtn').onclick=async ()=>{ el('doneScreen').classList.add('hidden'); solved=0; queue=await loadQuestions(activeDate); render(); };
 el('sound').onclick=()=>{ if(queue[0]&&queue[0].prompt.audio) speak(queue[0].prompt.audio.text, queue[0].prompt.audio.lang); };
 // 画面のどこを最初にさわっても音を解除（day選択前でも確実に）
 ['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{ unlockAudio(); },{passive:true}));
