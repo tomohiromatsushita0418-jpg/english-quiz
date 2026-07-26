@@ -19,8 +19,10 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORDS_DIR = os.path.join(ROOT, "words")
 USED_PATH = os.path.join(ROOT, "used.json")
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+MODELS = [m.strip() for m in os.environ.get(
+    "GEMINI_MODEL", "gemini-2.0-flash,gemini-1.5-flash,gemini-flash-latest").split(",") if m.strip()]
 KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+_WORKING = [None]
 DAILY = 30
 
 EMOJI_RE = re.compile(
@@ -48,16 +50,28 @@ def save_used(used):
 
 
 def gemini(prompt):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"temperature": 1.1, "responseMimeType": "application/json"},
     }
-    req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
-                                headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=90) as r:
-        d = json.load(r)
-    return d["candidates"][0]["content"]["parts"][0]["text"]
+    data = json.dumps(body).encode("utf-8")
+    # 動くモデルを優先。モデル起因(400/404)は次へフォールバック
+    order = ([_WORKING[0]] if _WORKING[0] else []) + [m for m in MODELS if m != _WORKING[0]]
+    last = None
+    for m in order:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={KEY}"
+        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                d = json.load(r)
+            _WORKING[0] = m
+            return d["candidates"][0]["content"]["parts"][0]["text"]
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code in (400, 404):     # モデル名/未対応 → 次のモデルへ
+                continue
+            raise
+    raise last if last else RuntimeError("no model worked")
 
 
 def gen_batch(n, used, got_en):

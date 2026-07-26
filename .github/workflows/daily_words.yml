@@ -25,7 +25,7 @@ jobs:
       - name: Generate today's words with Gemini
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: gemini-2.0-flash
+          GEMINI_MODEL: "gemini-2.0-flash,gemini-1.5-flash,gemini-flash-latest"
         run: |
           python scripts/gen_words.py \
             --date "$(TZ=Asia/Tokyo date +%Y-%m-%d)" \
