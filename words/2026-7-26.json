@@ -1,0 +1,185 @@
+{
+ "date": "2026-7-26",
+ "words": [
+  {
+   "en": "shark",
+   "read": "シャーク",
+   "ja": "さめ",
+   "emoji": "🦈"
+  },
+  {
+   "en": "kiwi",
+   "read": "キウイ",
+   "ja": "きうい",
+   "emoji": "🥝"
+  },
+  {
+   "en": "broccoli",
+   "read": "ブロッコリー",
+   "ja": "ぶろっこりー",
+   "emoji": "🥦"
+  },
+  {
+   "en": "avocado",
+   "read": "アボカド",
+   "ja": "あぼかど",
+   "emoji": "🥑"
+  },
+  {
+   "en": "cucumber",
+   "read": "キューカンバー",
+   "ja": "きゅうり",
+   "emoji": "🥒"
+  },
+  {
+   "en": "waffle",
+   "read": "ワッフル",
+   "ja": "わっふる",
+   "emoji": "🧇"
+  },
+  {
+   "en": "pretzel",
+   "read": "プレッツェル",
+   "ja": "ぷれっつぇる",
+   "emoji": "🥨"
+  },
+  {
+   "en": "pie",
+   "read": "パイ",
+   "ja": "ぱい",
+   "emoji": "🥧"
+  },
+  {
+   "en": "skateboard",
+   "read": "スケートボード",
+   "ja": "すけーとぼーど",
+   "emoji": "🛹"
+  },
+  {
+   "en": "tooth",
+   "read": "トゥース",
+   "ja": "は",
+   "emoji": "🦷"
+  },
+  {
+   "en": "leg",
+   "read": "レッグ",
+   "ja": "あし",
+   "emoji": "🦵"
+  },
+  {
+   "en": "baseball",
+   "read": "ベースボール",
+   "ja": "やきゅう",
+   "emoji": "⚾"
+  },
+  {
+   "en": "basketball",
+   "read": "バスケットボール",
+   "ja": "ばすけっとぼーる",
+   "emoji": "🏀"
+  },
+  {
+   "en": "soccer",
+   "read": "サッカー",
+   "ja": "さっかー",
+   "emoji": "⚽"
+  },
+  {
+   "en": "tennis",
+   "read": "テニス",
+   "ja": "てにす",
+   "emoji": "🎾"
+  },
+  {
+   "en": "violin",
+   "read": "バイオリン",
+   "ja": "ばいおりん",
+   "emoji": "🎻"
+  },
+  {
+   "en": "planet",
+   "read": "プラネット",
+   "ja": "わくせい",
+   "emoji": "🪐"
+  },
+  {
+   "en": "leaf",
+   "read": "リーフ",
+   "ja": "はっぱ",
+   "emoji": "🍃"
+  },
+  {
+   "en": "coat",
+   "read": "コート",
+   "ja": "こーと",
+   "emoji": "🧥"
+  },
+  {
+   "en": "boot",
+   "read": "ブーツ",
+   "ja": "ながぐつ",
+   "emoji": "🥾"
+  },
+  {
+   "en": "scarf",
+   "read": "スカーフ",
+   "ja": "まふらー",
+   "emoji": "🧣"
+  },
+  {
+   "en": "soap",
+   "read": "ソープ",
+   "ja": "せっけん",
+   "emoji": "🧼"
+  },
+  {
+   "en": "bed",
+   "read": "ベッド",
+   "ja": "べっど",
+   "emoji": "🛏️"
+  },
+  {
+   "en": "chair",
+   "read": "チェア",
+   "ja": "いす",
+   "emoji": "🪑"
+  },
+  {
+   "en": "camera",
+   "read": "カメラ",
+   "ja": "かめら",
+   "emoji": "📷"
+  },
+  {
+   "en": "chef",
+   "read": "シェフ",
+   "ja": "りょうりにん",
+   "emoji": "🧑‍🍳"
+  },
+  {
+   "en": "ninja",
+   "read": "ニンジャ",
+   "ja": "にんじゃ",
+   "emoji": "🥷"
+  },
+  {
+   "en": "puzzle",
+   "read": "パズル",
+   "ja": "ぱずる",
+   "emoji": "🧩"
+  },
+  {
+   "en": "yo-yo",
+   "read": "ヨーヨー",
+   "ja": "よーよー",
+   "emoji": "🪀"
+  },
+  {
+   "en": "flamingo",
+   "read": "フラミンゴ",
+   "ja": "ふらみんご",
+   "emoji": "🦩"
+  }
+ ]
+}
