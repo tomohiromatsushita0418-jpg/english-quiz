@@ -107,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.18</div>
+  <div class="ver">ver.19</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -405,24 +405,46 @@ function renderHome(){
 /* ============================================================
    音
    ============================================================ */
-/* iPhoneはWeb Audio(合成音)を『環境音(ambient)』扱いで小さく鳴らす(Macは大きい)。
-   そこで効果音は<audio>ファイル(=メディア音)で再生し、iPhoneでも音量ボタン最大で大きく鳴らす。
-   遅延対策: 各音を複数プール＋事前ウォームアップ＋再生後に頭出し(タップ時のシークを排除)。 */
+/* iPhoneで「大きい(メディア音)」×「遅延ゼロ(Web Audio)」を両立:
+   Web Audioで即時再生した音を MediaStreamDestination 経由で <audio>(メディア) から出す。
+   → タップと同時に鳴り、かつ音量ボタン最大で大きい。非対応端末は<audio>ファイル再生にフォールバック。 */
+let AC=null, MSD=null, MEDIA_EL=null, AUDIO_UNLOCKED=false;
+const BUFFERS={}, SRC={ correct:'correct.wav', wrong:'wrong.wav', fanfare:'fanfare.wav' };
 function makePool(src, n){ const a=[]; for(let i=0;i<n;i++){ const el=new Audio(src); el.preload='auto';
   el.addEventListener('ended', ()=>{ try{ el.currentTime=0; }catch(e){} }); a.push(el); } return {a, i:0}; }
 const SFX={ correct:makePool('correct.wav',4), wrong:makePool('wrong.wav',2), fanfare:makePool('fanfare.wav',1) };
-let AUDIO_UNLOCKED=false;
 function unlockAudio(){ if(AUDIO_UNLOCKED)return; AUDIO_UNLOCKED=true;
+  // フォールバック用HTMLAudioをウォームアップ
   for(const k in SFX){ SFX[k].a.forEach(el=>{ try{ el.muted=true; const p=el.play();
-    if(p&&p.then){ p.then(()=>{el.pause();el.currentTime=0;el.muted=false;}).catch(()=>{el.muted=false;}); }
-    else { el.pause(); el.currentTime=0; el.muted=false; } }catch(e){ el.muted=false; } }); }
+    if(p&&p.then){ p.then(()=>{el.pause();el.currentTime=0;el.muted=false;}).catch(()=>{el.muted=false;}); } }catch(e){el.muted=false;} }); }
+  // Web Audio → メディア経由 の準備
+  try{
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    if(AC.createMediaStreamDestination){
+      MSD=AC.createMediaStreamDestination();
+      MEDIA_EL=new Audio(); MEDIA_EL.srcObject=MSD.stream; MEDIA_EL.autoplay=true;
+      const p=MEDIA_EL.play(); if(p&&p.catch)p.catch(()=>{});
+      for(const k in SRC){ fetch(SRC[k]).then(r=>r.arrayBuffer()).then(a=>AC.decodeAudioData(a))
+        .then(buf=>{ BUFFERS[k]=buf; }).catch(()=>{}); }
+    }
+  }catch(e){ MSD=null; }
   try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; speechSynthesis.speak(u); }catch(e){}
+}
+function playWA(name){   // Web Audio(遅延ゼロ)でメディア経由再生。成功でtrue
+  if(AC && MSD && BUFFERS[name]){
+    try{ if(MEDIA_EL && MEDIA_EL.paused){ const p=MEDIA_EL.play(); if(p&&p.catch)p.catch(()=>{}); }
+      if(AC.state==='suspended') AC.resume();
+      const s=AC.createBufferSource(); s.buffer=BUFFERS[name]; s.connect(MSD); s.start(0); return true;
+    }catch(e){}
+  }
+  return false;
 }
 function playSfx(pool){ const el=pool.a[pool.i]; pool.i=(pool.i+1)%pool.a.length;
   try{ if(el.currentTime>0.02) el.currentTime=0; const p=el.play(); if(p&&p.catch)p.catch(()=>{}); }catch(e){} }
-function playCorrect(){ playSfx(SFX.correct); }
-function playWrong(){ playSfx(SFX.wrong); }
-function playFanfare(){ playSfx(SFX.fanfare); }
+function playCorrect(){ if(!playWA('correct')) playSfx(SFX.correct); }
+function playWrong(){ if(!playWA('wrong')) playSfx(SFX.wrong); }
+function playFanfare(){ if(!playWA('fanfare')) playSfx(SFX.fanfare); }
 /* 端末にある中で「一番自然な声」を選ぶ（compactの機械音を避ける） */
 let VOICE_EN=null, VOICE_JA=null;
 function pickVoices(){
