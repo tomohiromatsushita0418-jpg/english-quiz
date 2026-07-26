@@ -49,28 +49,45 @@ def save_used(used):
               ensure_ascii=False, indent=0)
 
 
+_LAST = [0.0]
+MIN_INTERVAL = 4.5   # レート制限対策: 呼び出し間隔を最低これだけ空ける(秒)
+
+
+def _throttle():
+    dt = time.time() - _LAST[0]
+    if dt < MIN_INTERVAL:
+        time.sleep(MIN_INTERVAL - dt)
+    _LAST[0] = time.time()
+
+
 def gemini(prompt):
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"temperature": 1.1, "responseMimeType": "application/json"},
     }
     data = json.dumps(body).encode("utf-8")
-    # 動くモデルを優先。モデル起因(400/404)は次へフォールバック
     order = ([_WORKING[0]] if _WORKING[0] else []) + [m for m in MODELS if m != _WORKING[0]]
     last = None
     for m in order:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={KEY}"
-        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-        try:
-            with urllib.request.urlopen(req, timeout=90) as r:
-                d = json.load(r)
-            _WORKING[0] = m
-            return d["candidates"][0]["content"]["parts"][0]["text"]
-        except urllib.error.HTTPError as e:
-            last = e
-            if e.code in (400, 404):     # モデル名/未対応 → 次のモデルへ
-                continue
-            raise
+        for attempt in range(4):
+            _throttle()
+            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=90) as r:
+                    d = json.load(r)
+                _WORKING[0] = m
+                return d["candidates"][0]["content"]["parts"][0]["text"]
+            except urllib.error.HTTPError as e:
+                last = e
+                if e.code == 429:                 # レート制限 → 待って同じモデルで再試行
+                    wait = 20 * (attempt + 1)
+                    print(f"  429(混雑) {wait}秒待機して再試行...")
+                    time.sleep(wait)
+                    continue
+                if e.code in (400, 404):           # モデル未対応 → 次のモデルへ
+                    break
+                raise
     raise last if last else RuntimeError("no model worked")
 
 
