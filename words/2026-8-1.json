@@ -1,0 +1,185 @@
+{
+ "date": "2026-8-1",
+ "words": [
+  {
+   "en": "bag",
+   "read": "バッグ",
+   "ja": "かばん",
+   "emoji": "👜"
+  },
+  {
+   "en": "cereal",
+   "read": "シリアル",
+   "ja": "シリアル",
+   "emoji": "🥣"
+  },
+  {
+   "en": "clown",
+   "read": "クラウン",
+   "ja": "ピエロ",
+   "emoji": "🤡"
+  },
+  {
+   "en": "computer",
+   "read": "コンピューター",
+   "ja": "パソコン",
+   "emoji": "💻"
+  },
+  {
+   "en": "doctor",
+   "read": "ドクター",
+   "ja": "おいしゃさん",
+   "emoji": "🧑‍⚕️"
+  },
+  {
+   "en": "earth",
+   "read": "アース",
+   "ja": "ちきゅう",
+   "emoji": "🌍"
+  },
+  {
+   "en": "envelope",
+   "read": "エンベロープ",
+   "ja": "ふうとう",
+   "emoji": "✉️"
+  },
+  {
+   "en": "farmer",
+   "read": "ファーマー",
+   "ja": "のうかさん",
+   "emoji": "👨‍🌾"
+  },
+  {
+   "en": "finger",
+   "read": "フィンガー",
+   "ja": "ゆび",
+   "emoji": "👆"
+  },
+  {
+   "en": "flag",
+   "read": "フラッグ",
+   "ja": "はた",
+   "emoji": "🚩"
+  },
+  {
+   "en": "football",
+   "read": "フットボール",
+   "ja": "ふっとぼーる",
+   "emoji": "🏈"
+  },
+  {
+   "en": "forest",
+   "read": "フォレスト",
+   "ja": "もり",
+   "emoji": "🌲"
+  },
+  {
+   "en": "game",
+   "read": "ゲーム",
+   "ja": "げーむ",
+   "emoji": "🎮"
+  },
+  {
+   "en": "helmet",
+   "read": "ヘルメット",
+   "ja": "へるめっと",
+   "emoji": "🪖"
+  },
+  {
+   "en": "king",
+   "read": "キング",
+   "ja": "おうさま",
+   "emoji": "🤴"
+  },
+  {
+   "en": "lamp",
+   "read": "ランプ",
+   "ja": "でんき",
+   "emoji": "💡"
+  },
+  {
+   "en": "mailbox",
+   "read": "メールボックス",
+   "ja": "ぽすと",
+   "emoji": "📫"
+  },
+  {
+   "en": "money",
+   "read": "マネー",
+   "ja": "おかね",
+   "emoji": "💰"
+  },
+  {
+   "en": "monster",
+   "read": "モンスター",
+   "ja": "かいじゅう",
+   "emoji": "👾"
+  },
+  {
+   "en": "muscle",
+   "read": "マッスル",
+   "ja": "きんにく",
+   "emoji": "💪"
+  },
+  {
+   "en": "music",
+   "read": "ミュージック",
+   "ja": "おんがく",
+   "emoji": "🎵"
+  },
+  {
+   "en": "paper",
+   "read": "ペーパー",
+   "ja": "かみ",
+   "emoji": "📄"
+  },
+  {
+   "en": "pen",
+   "read": "ペン",
+   "ja": "ぺん",
+   "emoji": "🖊️"
+  },
+  {
+   "en": "pirate",
+   "read": "パイレーツ",
+   "ja": "かいぞく",
+   "emoji": "🏴‍☠️"
+  },
+  {
+   "en": "plant",
+   "read": "プラント",
+   "ja": "しょくぶつ",
+   "emoji": "🪴"
+  },
+  {
+   "en": "queen",
+   "read": "クイーン",
+   "ja": "じょおうさま",
+   "emoji": "👸"
+  },
+  {
+   "en": "rock",
+   "read": "ロック",
+   "ja": "いわ",
+   "emoji": "🪨"
+  },
+  {
+   "en": "slide",
+   "read": "スライド",
+   "ja": "すべりだい",
+   "emoji": "🛝"
+  },
+  {
+   "en": "toast",
+   "read": "トースト",
+   "ja": "とーすと",
+   "emoji": "🍞"
+  },
+  {
+   "en": "acorn",
+   "read": "エイコーン",
+   "ja": "どんぐり",
+   "emoji": "🌰"
+  }
+ ]
+}
