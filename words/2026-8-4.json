@@ -1,0 +1,185 @@
+{
+ "date": "2026-8-4",
+ "words": [
+  {
+   "en": "calendar",
+   "read": "カレンダー",
+   "ja": "カレンダー",
+   "emoji": "📅"
+  },
+  {
+   "en": "thumbtack",
+   "read": "サムタック",
+   "ja": "がびょう",
+   "emoji": "📌"
+  },
+  {
+   "en": "globe",
+   "read": "グローブ",
+   "ja": "ちきゅうぎ",
+   "emoji": "🌐"
+  },
+  {
+   "en": "needle",
+   "read": "ニードル",
+   "ja": "はり",
+   "emoji": "🪡"
+  },
+  {
+   "en": "thread",
+   "read": "スレッド",
+   "ja": "いと",
+   "emoji": "🧵"
+  },
+  {
+   "en": "pin",
+   "read": "ピン",
+   "ja": "あんぜんピン",
+   "emoji": "🧷"
+  },
+  {
+   "en": "suitcase",
+   "read": "スーツケース",
+   "ja": "スーツケース",
+   "emoji": "🧳"
+  },
+  {
+   "en": "chopsticks",
+   "read": "チョップスティックス",
+   "ja": "おはし",
+   "emoji": "🥢"
+  },
+  {
+   "en": "plug",
+   "read": "プラグ",
+   "ja": "コンセント",
+   "emoji": "🔌"
+  },
+  {
+   "en": "stethoscope",
+   "read": "ステソスコープ",
+   "ja": "ちょうしんき",
+   "emoji": "🩺"
+  },
+  {
+   "en": "syringe",
+   "read": "シリンジ",
+   "ja": "ちゅうしゃ",
+   "emoji": "💉"
+  },
+  {
+   "en": "microscope",
+   "read": "マイクロスコープ",
+   "ja": "けんびきょう",
+   "emoji": "🔬"
+  },
+  {
+   "en": "tornado",
+   "read": "トルネード",
+   "ja": "たつまき",
+   "emoji": "🌪️"
+  },
+  {
+   "en": "germ",
+   "read": "ジャーム",
+   "ja": "ばいきん",
+   "emoji": "🦠"
+  },
+  {
+   "en": "mosquito",
+   "read": "モスキート",
+   "ja": "か",
+   "emoji": "🦟"
+  },
+  {
+   "en": "scorpion",
+   "read": "スコーピオン",
+   "ja": "サソリ",
+   "emoji": "🦂"
+  },
+  {
+   "en": "angel",
+   "read": "エンジェル",
+   "ja": "てんし",
+   "emoji": "👼"
+  },
+  {
+   "en": "brain",
+   "read": "ブレイン",
+   "ja": "のう",
+   "emoji": "🧠"
+  },
+  {
+   "en": "face",
+   "read": "フェイス",
+   "ja": "かお",
+   "emoji": "😀"
+  },
+  {
+   "en": "ping pong",
+   "read": "ピンポン",
+   "ja": "たくきゅう",
+   "emoji": "🏓"
+  },
+  {
+   "en": "stadium",
+   "read": "スタジアム",
+   "ja": "スタジアム",
+   "emoji": "🏟️"
+  },
+  {
+   "en": "shrine",
+   "read": "シュライン",
+   "ja": "じんじゃ",
+   "emoji": "⛩️"
+  },
+  {
+   "en": "church",
+   "read": "チャーチ",
+   "ja": "きょうかい",
+   "emoji": "⛪"
+  },
+  {
+   "en": "wheelchair",
+   "read": "ウィールチェア",
+   "ja": "くるまいす",
+   "emoji": "🦽"
+  },
+  {
+   "en": "flute",
+   "read": "フルート",
+   "ja": "フルート",
+   "emoji": "🪈"
+  },
+  {
+   "en": "wallet",
+   "read": "ウォレット",
+   "ja": "さいふ",
+   "emoji": "👛"
+  },
+  {
+   "en": "fan",
+   "read": "ファン",
+   "ja": "せんす",
+   "emoji": "🪭"
+  },
+  {
+   "en": "high heels",
+   "read": "ハイヒール",
+   "ja": "ハイヒール",
+   "emoji": "👠"
+  },
+  {
+   "en": "walrus",
+   "read": "ウォルラス",
+   "ja": "せいうち",
+   "emoji": "🦭"
+  },
+  {
+   "en": "oyster",
+   "read": "オイスター",
+   "ja": "かき",
+   "emoji": "🦪"
+  }
+ ]
+}
