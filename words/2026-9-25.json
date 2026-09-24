@@ -1,0 +1,179 @@
+{
+ "date": "2026-9-25",
+ "words": [
+  {
+   "en": "blouse",
+   "read": "ブラウス",
+   "ja": "ブラウス",
+   "emoji": "👚"
+  },
+  {
+   "en": "timer",
+   "read": "タイマー",
+   "ja": "タイマー",
+   "emoji": "⏲️"
+  },
+  {
+   "en": "nail polish",
+   "read": "ネイル ポリッシュ",
+   "ja": "マニキュア",
+   "emoji": "💅"
+  },
+  {
+   "en": "handshake",
+   "read": "ハンドシェイク",
+   "ja": "あくしゅ",
+   "emoji": "🤝"
+  },
+  {
+   "en": "clap",
+   "read": "クラップ",
+   "ja": "はくしゅ",
+   "emoji": "👏"
+  },
+  {
+   "en": "yawn",
+   "read": "ヨーン",
+   "ja": "あくび",
+   "emoji": "🥱"
+  },
+  {
+   "en": "sneeze",
+   "read": "スニーズ",
+   "ja": "くしゃみ",
+   "emoji": "🤧"
+  },
+  {
+   "en": "wink",
+   "read": "ウィンク",
+   "ja": "ウィンク",
+   "emoji": "😉"
+  },
+  {
+   "en": "sweat",
+   "read": "スウェット",
+   "ja": "あせ",
+   "emoji": "💦"
+  },
+  {
+   "en": "sparkles",
+   "read": "スパークルズ",
+   "ja": "きらきら",
+   "emoji": "✨"
+  },
+  {
+   "en": "gold medal",
+   "read": "ゴールド メダル",
+   "ja": "きんメダル",
+   "emoji": "🥇"
+  },
+  {
+   "en": "silver medal",
+   "read": "シルバー メダル",
+   "ja": "ぎんメダル",
+   "emoji": "🥈"
+  },
+  {
+   "en": "bronze medal",
+   "read": "ブロンズ メダル",
+   "ja": "どうメダル",
+   "emoji": "🥉"
+  },
+  {
+   "en": "groom",
+   "read": "グルーム",
+   "ja": "はなむこ",
+   "emoji": "🤵"
+  },
+  {
+   "en": "villain",
+   "read": "ヴィラン",
+   "ja": "わるもの",
+   "emoji": "🦹"
+  },
+  {
+   "en": "runner",
+   "read": "ランナー",
+   "ja": "はしるひと",
+   "emoji": "🏃"
+  },
+  {
+   "en": "jockey",
+   "read": "ジョッキー",
+   "ja": "ジョッキー",
+   "emoji": "🏇"
+  },
+  {
+   "en": "gymnastics",
+   "read": "ジムナスティクス",
+   "ja": "たいそう",
+   "emoji": "🤸"
+  },
+  {
+   "en": "wrestling",
+   "read": "レスリング",
+   "ja": "レスリング",
+   "emoji": "🤼"
+  },
+  {
+   "en": "juggling",
+   "read": "ジャグリング",
+   "ja": "ジャグリング",
+   "emoji": "🤹"
+  },
+  {
+   "en": "yoga",
+   "read": "ヨガ",
+   "ja": "ヨガ",
+   "emoji": "🧘"
+  },
+  {
+   "en": "explosion",
+   "read": "エクスプロージョン",
+   "ja": "ばくはつ",
+   "emoji": "💥"
+  },
+  {
+   "en": "dash",
+   "read": "ダッシュ",
+   "ja": "ダッシュ",
+   "emoji": "💨"
+  },
+  {
+   "en": "bomb",
+   "read": "ボム",
+   "ja": "ばくだん",
+   "emoji": "💣"
+  },
+  {
+   "en": "horn",
+   "read": "ホーン",
+   "ja": "ホルン",
+   "emoji": "📯"
+  },
+  {
+   "en": "smile",
+   "read": "スマイル",
+   "ja": "えがお",
+   "emoji": "😄"
+  },
+  {
+   "en": "family",
+   "read": "ファミリー",
+   "ja": "かぞく",
+   "emoji": "👨‍👩‍👧‍👦"
+  },
+  {
+   "en": "cross",
+   "read": "クロス",
+   "ja": "ばつ",
+   "emoji": "❌"
+  },
+  {
+   "en": "checkmark",
+   "read": "チェックマーク",
+   "ja": "チェック",
+   "emoji": "✔️"
+  }
+ ]
+}
