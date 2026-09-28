@@ -107,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.21</div>
+  <div class="ver">ver.22</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -224,8 +224,8 @@ function sample(arr,not){ let x; do{ x=arr[rnd(arr.length)]; }while(not&&x===not
 const el=id=>document.getElementById(id);
 
 /* カード生成ヘルパー */
-function cColor(w){ return {kind:'color', v:w[3], label:w[2]}; }
-function cEmoji(w){ return {kind:'emoji', v:w[3], label:w[2]}; }
+function cColor(w){ return {kind:'color', v:w[3], label:w[2], en:w[0]}; }
+function cEmoji(w){ return {kind:'emoji', v:w[3], label:w[2], en:w[0]}; }
 function cNum(n){ return {kind:'big', v:String(n)}; }
 function cLetter(ch){ return {kind:'big', v:ch}; }
 function cText(t){ return {kind:'txt', v:t}; }
@@ -446,9 +446,9 @@ let queue=[], solved=0, activeDate=null, locked=false;
    無ければ内蔵200語のプールにフォールバック（＝いつでも動く）。 */
 function mkWordQ(w, set){
   let d; let g=0; do{ d=set[rnd(set.length)]; }while(d && d.emoji===w.emoji && set.length>1 && g++<20);
-  const correct={kind:'emoji', v:w.emoji, label:w.ja||'', correct:true};
+  const correct={kind:'emoji', v:w.emoji, label:w.ja||'', en:w.en, correct:true};
   return {level:1, prompt:{kind:'word', text:w.en, audio:{text:w.en}},
-          hint:'えいごを きいて えらぼう', options:[correct, {kind:'emoji', v:(d?d.emoji:'❓'), label:(d?d.ja:'')}]};
+          hint:'えいごを きいて えらぼう', options:[correct, {kind:'emoji', v:(d?d.emoji:'❓'), label:(d?d.ja:''), en:(d?d.en:'')}]};
 }
 async function loadQuestions(d){
   try{ const r=await fetch('words/'+dateKey(d)+'.json?v='+Date.now(), {cache:'no-store'});
@@ -489,18 +489,18 @@ function render(){
   el('prompt').innerHTML=promptHTML(q.prompt)+(q.hint?`<div class="hint">${q.hint}</div>`:'');
   const cont=el('cards'); const opts=shuffle(q.options); cont.dataset.count=opts.length; cont.innerHTML='';
   opts.forEach(o=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=cardHTML(o);
-    const h=()=>choose(!!o.correct, c); c.onclick=h; c.onpointerup=h; cont.appendChild(c); });
+    const h=()=>choose(!!o.correct, c, o); c.onclick=h; c.onpointerup=h; cont.appendChild(c); });
   updateBar();
   if(q.prompt.audio) setTimeout(()=>speak(q.prompt.audio.text, q.prompt.audio.lang),150);
 }
-function choose(isRight, cardEl){
+function choose(isRight, cardEl, opt){
   if(locked) return; locked=true;
   if(isRight){ cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
     queue.shift(); solved++; setTimeout(render,1000);
   }else{ cardEl.classList.add('wrong'); playWrong();
-    const word=queue[0]&&queue[0].prompt.audio?queue[0].prompt.audio.text:'';
-    setTimeout(()=>speak(word,'en-US'),750);   // 不正解音のあとに単語を読み上げ
-    queue.push(queue.shift()); setTimeout(render,2300);
+    const word=(opt&&opt.en)||'';               // タップした(間違えた)カードの単語
+    if(word) setTimeout(()=>speak(word,'en-US'),750);   // ブッブーのあとにその単語を読み上げ
+    queue.push(queue.shift()); setTimeout(render, word?3300:1200);   // 読み上げ後に十分な間
   }
 }
 function flash(){ const f=el('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
