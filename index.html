@@ -107,7 +107,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.20</div>
+  <div class="ver">ver.21</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 30もんクイズ</h1>
@@ -498,7 +498,9 @@ function choose(isRight, cardEl){
   if(isRight){ cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
     queue.shift(); solved++; setTimeout(render,1000);
   }else{ cardEl.classList.add('wrong'); playWrong();
-    queue.push(queue.shift()); setTimeout(render,900);
+    const word=queue[0]&&queue[0].prompt.audio?queue[0].prompt.audio.text:'';
+    setTimeout(()=>speak(word,'en-US'),750);   // 不正解音のあとに単語を読み上げ
+    queue.push(queue.shift()); setTimeout(render,2300);
   }
 }
 function flash(){ const f=el('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
