@@ -23,7 +23,7 @@ MODELS = [m.strip() for m in os.environ.get(
     "GEMINI_MODEL", "gemini-2.0-flash,gemini-1.5-flash,gemini-flash-latest").split(",") if m.strip()]
 KEY = os.environ.get("GEMINI_API_KEY", "").strip()
 _WORKING = [None]
-DAILY = 30
+DAILY = 15
 
 EMOJI_RE = re.compile(
     "[\U0001F000-\U0001FAFF\U00002600-\U000027BF\U00002B00-\U00002BFF"

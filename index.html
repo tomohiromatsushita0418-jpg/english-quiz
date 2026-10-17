@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>えいご 30もんクイズ</title>
+<title>えいご 15もんクイズ</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
       user-select:none; -webkit-user-select:none; }
@@ -107,10 +107,10 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.23</div>
+  <div class="ver">ver.24</div>
   <div class="home-head">
     <div class="bear">🐻</div>
-    <h1>えいご 30もんクイズ</h1>
+    <h1>えいご 15もんクイズ</h1>
     <p>ひづけを えらんで はじめよう！ まいにち レベルアップ📈</p>
   </div>
   <div class="list" id="dayList"></div>
@@ -359,7 +359,7 @@ function buildPool(){
   return pool;
 }
 const POOL=buildPool();
-const DAILY=30;
+const DAILY=15;
 
 /* ============================================================
    日付 → その日の30問（順番に消費＝連続する日は重複しない）
@@ -391,7 +391,7 @@ function renderHome(){
     const d=new Date(today); d.setDate(today.getDate()-i);
     const done=isDone(d); const lv=levelOfIndex(dayIndexFor(d));
     const label=i===0?'きょう':i===1?'きのう':`${d.getMonth()+1}/${d.getDate()}`;
-    const sub=`${d.getMonth()+1}/${d.getDate()} の30もん`+(done?'・クリア済':'');
+    const sub=`${d.getMonth()+1}/${d.getDate()} の15もん`+(done?'・クリア済':'');
     const row=document.createElement('div');
     row.className='day'+(i===0?' today':'');
     row.innerHTML=`<div class="icon">${done?'🌟':'📘'}</div>
@@ -453,7 +453,7 @@ function mkWordQ(w, set){
 async function loadQuestions(d){
   try{ const r=await fetch('words/'+dateKey(d)+'.json?v='+Date.now(), {cache:'no-store'});
     if(r.ok){ const data=await r.json(); const ws=(data&&data.words)||[];
-      if(ws.length>=2){ return ws.map(w=>mkWordQ(w, ws)); } } }catch(e){}
+      if(ws.length>=2){ return ws.slice(0,DAILY).map(w=>mkWordQ(w, ws)); } } }catch(e){}
   return daySlice(d).map(q=>Object.assign({},q));   // フォールバック(内蔵語彙)
 }
 function buildQueue(d){ queue=daySlice(d).map(q=>Object.assign({},q)); solved=0; activeDate=d; }
@@ -509,7 +509,7 @@ function sparkle(){ const box=el('praise'); const ems=['⭐','🌟','✨','🎉'
     s.style.left=Math.random()*100+'vw'; s.style.animationDelay=(Math.random()*0.3)+'s'; s.style.fontSize=(24+Math.random()*26)+'px';
     box.appendChild(s); setTimeout(()=>s.remove(),1300); } }
 function finish(){ if(activeDate) markDone(activeDate);
-  el('doneMsg').textContent='30もん ぜんぶ せいかい！ また あそんでね！';
+  el('doneMsg').textContent='15もん ぜんぶ せいかい！ また あそんでね！';
   el('doneScreen').classList.remove('hidden'); playFanfare(); }
 
 el('homeBtn').onclick=goHome;

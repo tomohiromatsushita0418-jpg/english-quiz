@@ -1,7 +1,7 @@
 {
-  "name": "えいご 30もんクイズ",
+  "name": "えいご 15もんクイズ",
   "short_name": "えいごクイズ",
-  "description": "3歳向け 毎日30問の英語タップクイズ",
+  "description": "3歳向け 毎日15問の英語タップクイズ",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
