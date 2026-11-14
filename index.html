@@ -108,7 +108,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.25</div>
+  <div class="ver">ver.26</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 15もんクイズ</h1>
@@ -499,12 +499,10 @@ function choose(isRight, cardEl, opt){
   if(isRight){ cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
     queue.shift(); solved++; setTimeout(render,1000);
   }else{ cardEl.classList.add('wrong'); playWrong();
-    const ans=queue[0]&&queue[0].prompt.audio?queue[0].prompt.audio.text:'';
-    // 正解カードを光らせて教える
-    [...el('cards').children].forEach(c=>{ if(c.dataset.correct==='1') c.classList.add('hint-right'); });
+    const ans=(opt&&opt.en)||'';            // 間違えて選んだカードの単語
     queue.push(queue.shift());               // まちがいは最後にもう一度出る
     let moved=false; const next=()=>{ if(moved) return; moved=true; setTimeout(render,300); };
-    // ブッブー直後に「Hey Suzu-chan, this is ◯◯.」→ 読み終わったらすぐ次へ
+    // ブッブー直後に「Hey Suzu-chan, this is (選んだもの).」→ 読み終わったらすぐ次へ
     setTimeout(()=>speak(`Hey Suzu-chan, this is ${ans}.`,'en-US',next),450);
     setTimeout(next,4500);                   // 読み上げが鳴らない端末の保険
   }
