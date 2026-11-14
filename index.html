@@ -108,7 +108,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.26</div>
+  <div class="ver">ver.27</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 15もんクイズ</h1>
@@ -503,8 +503,8 @@ function choose(isRight, cardEl, opt){
     queue.push(queue.shift());               // まちがいは最後にもう一度出る
     let moved=false; const next=()=>{ if(moved) return; moved=true; setTimeout(render,300); };
     // ブッブー直後に「Hey Suzu-chan, this is (選んだもの).」→ 読み終わったらすぐ次へ
-    setTimeout(()=>speak(`Hey Suzu-chan, this is ${ans}.`,'en-US',next),450);
-    setTimeout(next,4500);                   // 読み上げが鳴らない端末の保険
+    setTimeout(()=>speak(`Hey Suzu-chan, this is ${ans}.`,'en-US',next),900);   // ブッブー(0.7秒)が鳴り終わってから
+    setTimeout(next,5000);                   // 読み上げが鳴らない端末の保険
   }
 }
 function flash(){ const f=el('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
