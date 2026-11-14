@@ -82,6 +82,7 @@
   .cards[data-count="3"] .card .label { font-size:18px; }
   .card.wrong { animation:shake .4s; }
   .card.right { animation:pop .5s; }
+  .card.hint-right { border-color:#43a047; box-shadow:0 0 0 6px #a5d6a7, 0 9px 0 rgba(0,0,0,.10); animation:pop .5s; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 50%{transform:translateX(10px)} 75%{transform:translateX(-6px)} }
   @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
 
@@ -107,7 +108,7 @@
 <body>
 
 <div class="screen" id="home">
-  <div class="ver">ver.24</div>
+  <div class="ver">ver.25</div>
   <div class="home-head">
     <div class="bear">🐻</div>
     <h1>えいご 15もんクイズ</h1>
@@ -433,10 +434,10 @@ function pickVoices(){
   VOICE_JA = ja.find(v=>/(enhanced|premium|siri|kyoko|o-ren|hattori)/i.test(v.name)) || ja[0] || null;
 }
 if('speechSynthesis' in window){ pickVoices(); speechSynthesis.onvoiceschanged=pickVoices; }
-function speak(text,lang){ try{ speechSynthesis.cancel();
+function speak(text,lang,onend){ try{ speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text); const ja=(lang==='ja-JP'); u.lang=lang||'en-US';
   const v=ja?VOICE_JA:VOICE_EN; if(v) u.voice=v;
-  u.rate=ja?1.0:0.85; u.pitch=1.05; speechSynthesis.speak(u);}catch(e){} }
+  u.rate=ja?1.0:0.85; u.pitch=1.05; if(onend) u.onend=onend; speechSynthesis.speak(u);}catch(e){ if(onend) onend(); } }
 
 /* ============================================================
    ゲーム
@@ -488,7 +489,7 @@ function render(){
   const q=queue[0];
   el('prompt').innerHTML=promptHTML(q.prompt)+(q.hint?`<div class="hint">${q.hint}</div>`:'');
   const cont=el('cards'); const opts=shuffle(q.options); cont.dataset.count=opts.length; cont.innerHTML='';
-  opts.forEach(o=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=cardHTML(o);
+  opts.forEach(o=>{ const c=document.createElement('div'); c.className='card'; c.innerHTML=cardHTML(o); if(o.correct) c.dataset.correct='1';
     const h=()=>choose(!!o.correct, c, o); c.onclick=h; c.onpointerup=h; cont.appendChild(c); });
   updateBar();
   if(q.prompt.audio) setTimeout(()=>speak(q.prompt.audio.text, q.prompt.audio.lang),150);
@@ -498,9 +499,14 @@ function choose(isRight, cardEl, opt){
   if(isRight){ cardEl.classList.add('right'); playCorrect(); flash(); sparkle();
     queue.shift(); solved++; setTimeout(render,1000);
   }else{ cardEl.classList.add('wrong'); playWrong();
-    const word=(opt&&opt.en)||'';               // タップした(間違えた)カードの単語
-    if(word) setTimeout(()=>speak(word,'en-US'),750);   // ブッブーのあとにその単語を読み上げ
-    queue.push(queue.shift()); setTimeout(render, word?3300:1200);   // 読み上げ後に十分な間
+    const ans=queue[0]&&queue[0].prompt.audio?queue[0].prompt.audio.text:'';
+    // 正解カードを光らせて教える
+    [...el('cards').children].forEach(c=>{ if(c.dataset.correct==='1') c.classList.add('hint-right'); });
+    queue.push(queue.shift());               // まちがいは最後にもう一度出る
+    let moved=false; const next=()=>{ if(moved) return; moved=true; setTimeout(render,300); };
+    // ブッブー直後に「Hey Suzu-chan, this is ◯◯.」→ 読み終わったらすぐ次へ
+    setTimeout(()=>speak(`Hey Suzu-chan, this is ${ans}.`,'en-US',next),450);
+    setTimeout(next,4500);                   // 読み上げが鳴らない端末の保険
   }
 }
 function flash(){ const f=el('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
